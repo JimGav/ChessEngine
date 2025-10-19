@@ -5,8 +5,11 @@ from functools import partial
 class ChessGUI:
 
     window = None
+    board = [[None for col in range(8)] for row in range(8)]
     board_colors = tuple()
-    piece_imgs = set()
+    piece_imgs = set()      # set of Tk.PhotoImage instances
+    selected_btn = None     # (btn, row, col)
+    turn = "white"
     img_paths = {
         "white_pawn": "frontend/images/white_pawn.png",
         "black_pawn": "frontend/images/black_pawn.png",
@@ -26,9 +29,33 @@ class ChessGUI:
 
     def __init__(self, window_name:str, window_size:str, board_colors:tuple):
         self.board_colors = board_colors
+        self.setup_board()
         self.create_window(window_name, window_size)
         self.window.mainloop()
 
+
+    # Setup board to be in initial chess position
+    def setup_board(cls):
+        for col in range(8):
+            cls.board[1][col] = "white_pawn"
+            cls.board[6][col] = "black_pawn"
+        cls.board[0][0] = "white_rook"
+        cls.board[7][0] = "black_rook"
+        cls.board[0][1] = "white_knight"
+        cls.board[7][1] = "black_knight"
+        cls.board[0][2] = "white_bishop"
+        cls.board[7][2] = "black_bishop"
+        cls.board[0][3] = "white_queen"
+        cls.board[7][3] = "black_queen"
+        cls.board[0][4] = "white_king"
+        cls.board[7][4] = "black_king"
+        cls.board[0][5] = "white_bishop"
+        cls.board[7][5] = "black_bishop"
+        cls.board[0][6] = "white_knight"
+        cls.board[7][6] = "black_knight"
+        cls.board[0][7] = "white_rook"
+        cls.board[7][7] = "black_rook"
+        
 
     def create_window(cls, window_name:str, window_size:str):
         cls.window = Tk.Tk()
@@ -36,44 +63,46 @@ class ChessGUI:
         cls.window.geometry(f"{window_size}x{window_size}")
         cls.window.rowconfigure(tuple(range(8)), weight=1)
         cls.window.columnconfigure(tuple(range(8)), weight=1)
+        cls.create_buttons()
 
-        # Setup pieces
+
+    def create_buttons(cls):
         for row in range(8):
             for col in range(8):
-
-                piece = None
-                if row == 1 or row == 6:
-                    piece = "_pawn"
-                elif row == 0 or row == 7:
-                    if col == 0 or col == 7:
-                        piece = "_rook"
-                    elif col == 1 or col == 6:
-                        piece = "_knight"
-                    elif col == 2 or col == 5:
-                        piece = "_bishop"
-                    elif col == 3:
-                        piece = "_queen"
-                    elif col == 4:
-                        piece = "_king"
-
-                if piece is not None:
-                    if row < 4:
-                        piece = f"white{piece}"
-                    else:
-                        piece = f"black{piece}"
                 
                 sqr_color = cls.get_sqr_color(row, col)
-                btn = Tk.Button(cls.window, bg=sqr_color, activebackground=sqr_color, pady=23, cursor="hand2", command= partial(cls.btn_clicked, row,col))
+                btn = Tk.Button(cls.window, bg=sqr_color, activebackground=sqr_color, pady=23, cursor="hand2")
+                btn.config(command= partial(cls.btn_clicked, row,col,btn))
                 btn.grid(row=7-row, column=col, sticky="nwes")
+                piece = cls.board[row][col]
                 if piece != None:
                     img=Tk.PhotoImage(file=cls.img_paths[piece])
                     cls.piece_imgs.add(img)
                     btn.config(image=img)
 
-    
-    def btn_clicked(cls, row, col):
-        print(row, col)
 
+    # Handler for button click event
+    def btn_clicked(cls, row, col, btn):
+        
+        if cls.turn == cls.get_piece_color(row,col):
+            if cls.selected_btn is not None:
+                cls.deselect()
+            cls.select(btn,row,col)
+
+        # Move = selected_sqr --> row,col
+        
+
+    def select(cls, btn:Tk.Button, row:int, col:int):
+        btn.config(bg="yellow", activebackground="yellow")
+        cls.selected_btn = (btn, row, col)
+
+    def deselect(cls):
+        color = cls.get_sqr_color(*cls.selected_btn[1:])
+        cls.selected_btn[0].config(bg=color, activebackground=color)
 
     def get_sqr_color(cls, row:int, col:int):
         return cls.board_colors[0] if (row+col)%2 == 0 else cls.board_colors[1]
+    
+    def get_piece_color(cls, row:int, col:int):
+        piece = cls.board[row][col]
+        return None if piece is None else piece.split("_")[0]
