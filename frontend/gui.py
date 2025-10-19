@@ -83,22 +83,35 @@ class ChessGUI:
 
     # Handler for button click event
     def btn_clicked(cls, row, col, btn):
-        
-        if cls.turn == cls.get_piece_color(row,col):
-            if cls.selected_btn is not None:
-                cls.deselect()
-            cls.select(btn,row,col)
 
-        # Move = selected_sqr --> row,col
-        
+        if cls.turn == cls.get_piece_color(row,col):
+            cls.select(btn,row,col)
+        elif cls.selected_btn is not None:
+            move = (cls.selected_btn[1:], (row,col))
+            # if move valid
+            #   play_move
+
+            cls.play_move(move)
+            cls.pass_turn()
+
+
+    def play_move(cls, move):
+        print(move)
+
+    def pass_turn(cls):
+        cls.deselect()
+        cls.turn = "white" if cls.turn == "black" else "black"
 
     def select(cls, btn:Tk.Button, row:int, col:int):
+        if cls.selected_btn is not None:
+            cls.deselect()
         btn.config(bg="yellow", activebackground="yellow")
         cls.selected_btn = (btn, row, col)
 
     def deselect(cls):
         color = cls.get_sqr_color(*cls.selected_btn[1:])
         cls.selected_btn[0].config(bg=color, activebackground=color)
+        cls.selected_btn = None
 
     def get_sqr_color(cls, row:int, col:int):
         return cls.board_colors[0] if (row+col)%2 == 0 else cls.board_colors[1]
