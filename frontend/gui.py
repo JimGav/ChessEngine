@@ -101,7 +101,19 @@ class ChessGUI:
 
 
     def play_move(cls, move):
-        print(move)
+        src,target = move
+        cls.board[target[0]][target[1]] = cls.board[src[0]][src[1]]
+        cls.board[src[0]][src[1]] = None
+
+        cls.render_board()
+
+    def render_board(cls):
+        for row in range(8):
+            for col in range(8):
+                piece = cls.board[row][col]
+                btn = cls.btn_info[(row,col)]
+                btn.config(image=cls.piece_imgs[piece])
+                    
 
     def pass_turn(cls):
         cls.deselect()
