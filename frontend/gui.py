@@ -7,7 +7,7 @@ class ChessGUI:
     window = None
     board = [[None for col in range(8)] for row in range(8)]
     board_colors = tuple()
-    piece_imgs = set()      # set of Tk.PhotoImage instances
+    piece_imgs = dict()      # dict of Tk.PhotoImage instances
     selected_btn = None     # (btn, row, col)
     turn = "white"
     img_paths = {
@@ -25,6 +25,7 @@ class ChessGUI:
         "black_queen": "frontend/images/black_queen.png",
         None: ""
     } 
+    btn_info = dict()
 
 
     def __init__(self, window_name:str, window_size:str, board_colors:tuple):
@@ -71,14 +72,18 @@ class ChessGUI:
             for col in range(8):
                 
                 sqr_color = cls.get_sqr_color(row, col)
-                btn = Tk.Button(cls.window, bg=sqr_color, activebackground=sqr_color, pady=23, cursor="hand2")
+                btn = Tk.Button(cls.window, bg=sqr_color, activebackground=sqr_color, cursor="hand2")
                 btn.config(command= partial(cls.btn_clicked, row,col,btn))
                 btn.grid(row=7-row, column=col, sticky="nwes")
                 piece = cls.board[row][col]
-                if piece != None:
-                    img=Tk.PhotoImage(file=cls.img_paths[piece])
-                    cls.piece_imgs.add(img)
-                    btn.config(image=img)
+    
+                if piece not in cls.piece_imgs:
+                    img=Tk.PhotoImage(file=cls.img_paths[piece], width=60, height=60)
+                    cls.piece_imgs[piece] = img
+
+                btn.config(image=cls.piece_imgs[piece])
+
+                cls.btn_info[(row,col)] = btn
 
 
     # Handler for button click event
