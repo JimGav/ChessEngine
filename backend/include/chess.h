@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 #include "bitboard.h"
+#include "err_handle.h"
+#include "list.h"
 
 
 enum enumColor{
@@ -44,5 +46,11 @@ typedef struct {
     bool castling_rights[2];
     enum enumSquare ep_target;
 } ChessState;
+
+
+/* State search */
+status_t gen_start_state(ChessState *start_state);
+status_t gen_successors(ChessState *state, List *successors);
+bool is_goal_state(ChessState *state);
 
 #endif
