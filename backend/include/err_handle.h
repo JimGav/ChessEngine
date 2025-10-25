@@ -1,6 +1,8 @@
 #ifndef ERR_HANDLE_H
 #define ERR_HANDLE_H
 
+#include <stdio.h>
+
 #define PSTAT(stat, label){                 \
     if (stat == STAT_NULLPTR){              \
         printf("%s: STAT_NULLPTR\n", label);  \
