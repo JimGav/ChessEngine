@@ -2,7 +2,7 @@
 #include "list.h"
 
 
-List *list_create(int (*compare_func), void (*destroy_func)){
+List *list_create(int (*compare_func)(void*,void*), void (*destroy_func)(void*)){
 
     if (compare_func == NULL)
         PSTAT(STAT_NULLPTR, "list_create compare_func");

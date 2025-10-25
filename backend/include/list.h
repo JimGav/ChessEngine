@@ -3,6 +3,12 @@
 
 #include "err_handle.h"
 
+typedef struct ListNode ListNode;
+struct ListNode {
+    void *dt_ptr;
+    ListNode *next;
+};
+
 typedef struct {
     ListNode *head;
     int size;
@@ -11,13 +17,7 @@ typedef struct {
 } List;
 
 
-typedef struct {
-    void *dt_ptr;
-    ListNode *next;
-} ListNode;
-
-
-List *list_create(List *list, int (*compare_func), void (*destroy_func));
+List *list_create(int (*compare_func)(void*,void*), void (*destroy_func)(void*));
 status_t list_insert(List *list, void *dt_ptr);
 status_t list_remove(List *list, void *dt_ptr);
 status_t list_destroy(List *list);
