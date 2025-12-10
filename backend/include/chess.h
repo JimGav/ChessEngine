@@ -31,6 +31,7 @@ typedef enum {
 
 typedef struct {
     BB_t piece_bbs[12];
+    BB_t white_bb, black_bb, all_bb;
     color_t turn;
     bool castling_rights[2];
     sqr_t ep_target;

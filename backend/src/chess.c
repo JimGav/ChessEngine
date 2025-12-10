@@ -36,6 +36,16 @@ status_t gen_start_state(ChessState *start_state){
         set_one(&piece_bbs[BLACK_PAWN], a8+i);
     }
 
+    start_state->white_bb = piece_bbs[WHITE_PAWN]   | piece_bbs[WHITE_KNIGHT] 
+                          | piece_bbs[WHITE_BISHOP] | piece_bbs[WHITE_ROOK] 
+                          | piece_bbs[WHITE_KING]   | piece_bbs[WHITE_QUEEN];
+
+    start_state->black_bb = piece_bbs[BLACK_PAWN]   | piece_bbs[BLACK_KNIGHT] 
+                          | piece_bbs[BLACK_BISHOP] | piece_bbs[BLACK_ROOK] 
+                          | piece_bbs[BLACK_KING]   | piece_bbs[BLACK_QUEEN];
+
+    start_state->all_bb = start_state->white_bb | start_state->black_bb;
+
     start_state->castling_rights[WHITE] = 0;
     start_state->castling_rights[BLACK] = 0;
     
