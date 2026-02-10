@@ -11,29 +11,10 @@
 #define E(sqr, j) (BOARD_FILE(sqr) > 8-j ? (-1) : (sqr+j))
 #define S(sqr, i) (BOARD_RANK(sqr) < 1+i ? (-1) : (sqr-8*i))
 
-#define NW(sqr, i) {\
-  if (N(sqr,i) == -1)\
-    return (-1)\
-  return W(N(sqr,i),i);\
-}\
-
-#define NE(sqr, i) {\
-  if (N(sqr,i) == -1)\
-    return (-1)\
-  return E(N(sqr,i),i);\
-}\
-
-#define SW(sqr, i) {\
-  if (S(sqr,i) == -1)\
-    return (-1)\
-  return W(S(sqr,i),i);\
-}\
-
-#define SE(sqr, i) {\
-  if (S(sqr,i) == -1)\
-    return (-1)\
-  return E(S(sqr,i),i);\
-}\
+#define NW(sqr, i) (N(sqr,i) == -1 ? -1 : W(N(sqr,i),i))
+#define NE(sqr, i) (N(sqr,i) == -1 ? -1 : E(N(sqr,i),i))
+#define SW(sqr, i) (S(sqr,i) == -1 ? -1 : W(S(sqr,i),i))
+#define SE(sqr, i) (S(sqr,i) == -1 ? -1 : E(S(sqr,i),i))
 
 
 typedef enum {
