@@ -30,6 +30,12 @@ typedef enum {
 
 
 typedef struct {
+    BB_t knight_attck[64], bishop_attck[64], 
+        rook_attck[64], king_attck[64], queen_attck[64];
+} attck_bbs_t;
+
+
+typedef struct {
     BB_t piece_bbs[12];
     BB_t white_bb, black_bb, all_bb;
     color_t turn;
@@ -49,5 +55,7 @@ typedef struct {
 status_t gen_start_state(ChessState *start_state);
 status_t gen_successors(ChessState *state, List *successors);
 bool is_goal_state(ChessState *state);
+
+status_t gen_atck_bbs(attck_bbs_t *bbs);
 
 #endif
