@@ -21,6 +21,9 @@ status_t set_zero(BB_t *bb, sqr_t sqr){
 sqr_t pop_lsb(BB_t *bb){
     assert(bb != NULL);
 
+    if (*bb == 0)
+        return -1;
+
     sqr_t sqr;
     for (sqr = a1; sqr <= h8; sqr++){
         if (*bb & 1)    break;
