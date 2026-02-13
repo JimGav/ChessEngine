@@ -10,6 +10,9 @@
 #include "types.h"
 
 
+attck_bbs_t attck_bbs;
+
+
 typedef struct {
     BB_t piece_bbs[12];
     BB_t white_bb, black_bb, all_bb;
@@ -24,7 +27,15 @@ status_t gen_start_state(ChessState *start_state);
 status_t gen_successors(ChessState *state, List *successors);
 bool is_goal_state(ChessState *state);
 
-status_t gen_atck_bbs(attck_bbs_t *bbs);
-status_t gen_moves(ChessState *state, List *moves, attck_bbs_t *attck_bbs);
+status_t gen_attck_bbs();
+
+/* Move generation */
+status_t gen_moves(ChessState *state, List *moves);
+status_t gen_pawn_moves(ChessState *state, List *moves);
+status_t gen_knight_moves(ChessState *state, List *moves);
+status_t gen_bishop_moves(ChessState *state, List *moves);
+status_t gen_rook_moves(ChessState *state, List *moves);
+status_t gen_queen_moves(ChessState *state, List *moves);
+status_t gen_king_moves(ChessState *state, List *moves);
 
 #endif
