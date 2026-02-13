@@ -44,13 +44,6 @@ typedef struct {
 } ChessState;
 
 
-typedef struct {
-    sqr_t origin;
-    sqr_t target;
-    color_t side;
-} Move;
-
-
 /* State search */
 status_t gen_start_state(ChessState *start_state);
 status_t gen_successors(ChessState *state, List *successors);
