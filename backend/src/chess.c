@@ -60,6 +60,100 @@ status_t gen_start_state(ChessState *start_state){
 
 
 /* 
+    Given state generates all successor states and stores 
+    them in successors list 
+*/
+status_t gen_successors(ChessState *state, List *successors){
+    
+}
+
+
+/* Generates a list of pseudo legal moves */
+status_t gen_moves(ChessState *state, List *moves, attck_bbs_t *attck_bbs){
+    
+    assert(state != NULL);
+    assert(moves != NULL);
+    assert(attck_bbs != NULL);
+    
+    if (state->turn == WHITE){
+        
+        BB_t bb, attck_bb;
+        sqr_t src,target;
+        
+        /* Knight moves */
+        bb = state->piece_bbs[WHITE_KNIGHT];
+        attck_bb = attck_bbs->knight_attck[src];
+        while ((src = pop_lsb(&bb)) != -1){
+            while ((target = pop_lsb(&attck_bb)) != -1){
+                Move *move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+            }
+        }
+        
+        /* Bishop moves */ // todo: OPtimize with attck bb
+        bb = state->piece_bbs[WHITE_BISHOP];
+        attck_bb = attck_bbs->bishop_attck[src];
+        while ((src = pop_lsb(&bb)) != -1){
+            for (int i = 1; i < 7; i++){
+                target = NE(src, i);
+                if (target == -1)
+                    continue;
+                
+                Move *move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+
+                if (sqr_to_bb(target) & state->black_bb)
+                    break;
+            }
+
+
+            for (int i = 1; i < 7; i++){
+                target = NW(src, i);
+                if (target == -1)
+                    continue;
+                
+                Move *move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+
+                if (sqr_to_bb(target) & state->black_bb)
+                    break;
+            }
+
+            for (int i = 1; i < 7; i++){
+                target = SE(src, i);
+                if (target == -1)
+                    continue;
+                
+                Move *move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+
+                if (sqr_to_bb(target) & state->black_bb)
+                    break;
+            }
+
+            for (int i = 1; i < 7; i++){
+                target = SW(src, i);
+                if (target == -1)
+                    continue;
+                
+                Move *move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+
+                if (sqr_to_bb(target) & state->black_bb)
+                    break;
+            }
+        }        
+        
+    }
+    else if (state->turn == BLACK){
+    
+    }
+}
+
+
+
+
+/* 
     Generates an attack bitboard for each piece type and stores it in bbs 
     bbs = bb array of array of bbs for each piece type
 */

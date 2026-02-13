@@ -25,5 +25,6 @@ status_t gen_successors(ChessState *state, List *successors);
 bool is_goal_state(ChessState *state);
 
 status_t gen_atck_bbs(attck_bbs_t *bbs);
+status_t gen_moves(ChessState *state, List *moves, attck_bbs_t *attck_bbs);
 
 #endif
