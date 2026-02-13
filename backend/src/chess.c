@@ -179,6 +179,68 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
     assert(state != NULL);
     assert(moves != NULL);
 
+    //todo: optimize
+    BB_t rest_pawns = state->turn == WHITE ?
+        state->piece_bbs[WHITE_PAWN]:
+        state->piece_bbs[BLACK_PAWN];
+
+    sqr_t src,target;
+    while ((src = pop_lsb(&rest_pawns)) != -1){
+        if (state->turn == WHITE){
+            target = N(src, 1);
+            if (target == -1 || (sqr_to_bb(target) & state->all_bb))
+                continue;
+            Move *move = create_move(src, target, WHITE);
+            list_insert(moves, move);
+
+            target = N(src, 2);
+            if (BOARD_FILE(src) != 1 || sqr_to_bb(target) & state->all_bb)
+                continue;
+            move = create_move(src, target, WHITE);
+            list_insert(moves, move);
+
+            /* Captures */
+            target = NW(src, 1);
+            if (target != -1 && (sqr_to_bb(target) & state->black_bb)){
+                move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+            }
+            target = NE(src, 1);
+            if (target != -1 && (sqr_to_bb(target) & state->black_bb)){
+                move = create_move(src, target, WHITE);
+                list_insert(moves, move);
+            }
+
+            // todo: en passant
+        }
+        else if (state->turn == BLACK){
+            target = S(src, 1);
+            if (target == -1 || (sqr_to_bb(target) & state->all_bb))
+                continue;
+            Move *move = create_move(src, target, BLACK);
+            list_insert(moves, move);
+
+            target = S(src, 2);
+            if (BOARD_FILE(src) != 6 || sqr_to_bb(target) & state->all_bb)
+                continue;
+            move = create_move(src, target, BLACK);
+            list_insert(moves, move);
+
+            /* Captures */
+            target = SW(src, 1);
+            if (target != -1 && (sqr_to_bb(target) & state->white_bb)){
+                move = create_move(src, target, BLACK);
+                list_insert(moves, move);
+            }
+            target = SE(src, 1);
+            if (target != -1 && (sqr_to_bb(target) & state->white_bb)){
+                move = create_move(src, target, BLACK);
+                list_insert(moves, move);
+            }
+            // todo: en passant
+        }
+    }
+
     return STAT_SUCCESS;
 }
 
