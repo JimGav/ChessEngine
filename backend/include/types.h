@@ -20,7 +20,8 @@ typedef enum {
     BLACK_KNIGHT,
     BLACK_BISHOP,
     BLACK_QUEEN,
-    BLACK_KING
+    BLACK_KING,
+    PIECE_T_LAST
 } piece_t;
 
 
