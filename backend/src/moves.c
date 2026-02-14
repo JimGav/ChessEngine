@@ -2,11 +2,12 @@
 #include "moves.h"
 
 
-Move *create_move(sqr_t origin, sqr_t target, color_t side){    
+Move *create_move(sqr_t origin, sqr_t target, color_t side, piece_t piece){    
     Move *move = calloc(1, sizeof(*move));
     move->origin = origin;
     move->target = target;
     move->side = side;
+    move->piece = piece;
     return move;
 }
 

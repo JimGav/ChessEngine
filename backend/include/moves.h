@@ -8,9 +8,10 @@ typedef struct {
     sqr_t origin;
     sqr_t target;
     color_t side;
+    piece_t piece;
 } Move;
 
-Move *create_move(sqr_t origin, sqr_t target, color_t side);
+Move *create_move(sqr_t origin, sqr_t target, color_t side, piece_t piece);
 void destroy_move(Move *move);
 
 
