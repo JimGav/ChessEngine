@@ -56,7 +56,29 @@ status_t gen_start_state(ChessState *start_state){
     them in successors list 
 */
 status_t gen_successors(ChessState *state, List *successors){
+    assert(state != NULL);
+    assert(successors != NULL);
+
+    List *move_list = list_create(NULL, NULL); //todo
+    gen_legal_moves(state, move_list);
     
+    ListNode *node = move_list->head;
+    while (node){
+        ListNode *next = node->next;
+
+        /* Create successor for current move */
+        Move *move = node->dt_ptr;
+        ChessState *succ = malloc(sizeof(*succ));
+        *succ = *state;
+        play_move(move, succ);
+        succ->turn = state->turn == WHITE ? BLACK : WHITE;
+        list_insert(successors, succ);
+
+        node = next;
+    }
+
+
+    return STAT_SUCCESS;
 }
 
 
