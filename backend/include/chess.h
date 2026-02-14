@@ -30,7 +30,7 @@ bool is_goal_state(ChessState *state);
 status_t gen_attck_bbs();
 
 /* Move generation */
-status_t gen_moves(ChessState *state, List *moves);
+status_t gen_legal_moves(ChessState *state, List *moves);
 status_t gen_pawn_moves(ChessState *state, List *moves);
 status_t gen_knight_moves(ChessState *state, List *moves);
 status_t gen_bishop_moves(ChessState *state, List *moves);

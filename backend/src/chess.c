@@ -153,7 +153,7 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
     Generates a list of pseudo legal moves. Pseudo legal moves
     are legal moves as well as moves that leave the king in check.
 */
-status_t gen_moves(ChessState *state, List *moves){
+status_t gen_legal_moves(ChessState *state, List *moves){
 
     assert(state != NULL);
     assert(moves != NULL);
@@ -164,6 +164,8 @@ status_t gen_moves(ChessState *state, List *moves){
     gen_rook_moves(state, moves);
     gen_queen_moves(state, moves);
     gen_king_moves(state, moves);
+
+    legalize_moves(state, moves);
 }
 
 
