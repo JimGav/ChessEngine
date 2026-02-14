@@ -38,15 +38,7 @@ status_t gen_start_state(ChessState *start_state){
         set_one(&piece_bbs[BLACK_PAWN], a8+i);
     }
 
-    start_state->white_bb = piece_bbs[WHITE_PAWN]   | piece_bbs[WHITE_KNIGHT] 
-                          | piece_bbs[WHITE_BISHOP] | piece_bbs[WHITE_ROOK] 
-                          | piece_bbs[WHITE_KING]   | piece_bbs[WHITE_QUEEN];
-
-    start_state->black_bb = piece_bbs[BLACK_PAWN]   | piece_bbs[BLACK_KNIGHT] 
-                          | piece_bbs[BLACK_BISHOP] | piece_bbs[BLACK_ROOK] 
-                          | piece_bbs[BLACK_KING]   | piece_bbs[BLACK_QUEEN];
-
-    start_state->all_bb = start_state->white_bb | start_state->black_bb;
+    update_bbs(start_state);
 
     start_state->castling_rights[WHITE] = 0;
     start_state->castling_rights[BLACK] = 0;
@@ -558,4 +550,99 @@ status_t gen_king_moves(ChessState *state, List *moves){
     } 
 
     return STAT_SUCCESS;
+}
+
+
+/* Removes all remaining legal moves from move list */
+status_t legalize_moves(ChessState *state, List *moves){
+    assert(state != NULL);
+    assert(moves != NULL);
+
+    
+    ListNode *node = moves->head;
+    while (node != NULL){
+        ListNode *next = node->next;
+        Move *move = node->dt_ptr;
+
+        /* Simultate move on a dummy state */
+        ChessState dummy_state = *state;
+        color_t turn = state->turn;
+        play_move(move, &dummy_state);
+        
+        /* If after playing move player is in check remove */
+        if (in_check(state, turn))
+            list_remove(moves, move);
+        
+        node = next;
+    }
+
+    return STAT_SUCCESS;
+}
+
+
+status_t play_move(Move *move, ChessState *state){
+    assert(move != NULL);
+    assert(state != NULL);
+
+    set_zero(&state->piece_bbs[move->piece], move->origin);
+    set_one(&state->piece_bbs[move->piece], move->target);
+
+    update_bbs(state);
+
+    return STAT_SUCCESS;
+}
+
+status_t update_bbs(ChessState *state){
+    assert(state != NULL);
+
+    state->white_bb = state->piece_bbs[WHITE_PAWN]   | state->piece_bbs[WHITE_KNIGHT] 
+                    | state->piece_bbs[WHITE_BISHOP] | state->piece_bbs[WHITE_ROOK] 
+                    | state->piece_bbs[WHITE_KING]   | state->piece_bbs[WHITE_QUEEN];
+
+    state->black_bb = state->piece_bbs[BLACK_PAWN]   | state->piece_bbs[BLACK_KNIGHT] 
+                    | state->piece_bbs[BLACK_BISHOP] | state->piece_bbs[BLACK_ROOK] 
+                    | state->piece_bbs[BLACK_KING]   | state->piece_bbs[BLACK_QUEEN];
+
+    state->all_bb = state->white_bb | state->black_bb;
+    
+    return STAT_SUCCESS;
+}
+
+bool in_check(ChessState *state, color_t side){
+    assert(state != NULL);
+
+    if (side == WHITE){
+        BB_t rest_black = state->black_bb;
+        sqr_t src;
+        while ((src = pop_lsb(&rest_black)) != -1){
+            piece_t piece = get_piece_on_sqr(state, src);
+            if (piece == BLACK_KNIGHT && (attck_bbs.knight_attck[src] & state->piece_bbs[WHITE_KING]))
+                return true;
+            if (piece == BLACK_BISHOP && (attck_bbs.bishop_attck[src] & state->piece_bbs[WHITE_KING]))
+                return true;
+            if (piece == BLACK_ROOK && (attck_bbs.rook_attck[src] & state->piece_bbs[WHITE_KING]))
+                return true;
+            if (piece == BLACK_QUEEN && (attck_bbs.queen_attck[src] & state->piece_bbs[WHITE_KING]))
+                return true;
+            if (piece == BLACK_KING && (attck_bbs.king_attck[src] & state->piece_bbs[WHITE_KING]))
+                return true;
+        }
+    }
+
+    else if (side == BLACK){
+
+    }
+}
+
+
+piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr){
+    assert(state != NULL);
+    BB_t sqr_bb = sqr_to_bb(sqr);
+
+    for (piece_t i = 0; i < PIECE_T_LAST; i++){
+        if (state->piece_bbs[i] & sqr_bb)
+            return i;
+    }
+
+    return PIECE_T_LAST;
 }
