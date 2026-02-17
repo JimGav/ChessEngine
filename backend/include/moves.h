@@ -1,6 +1,7 @@
 #ifndef MOVES_H
 #define MOVES_H
 
+#include <assert.h>
 #include "sqr.h"
 #include "types.h"
 
