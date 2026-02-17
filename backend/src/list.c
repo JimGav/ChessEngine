@@ -66,4 +66,5 @@ status_t list_destroy(List *list){
         curr = next;
     }
     free(list);
+    return STAT_SUCCESS;
 }

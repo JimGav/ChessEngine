@@ -166,6 +166,8 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
         }
     }
+
+    return STAT_SUCCESS;
 }
 
 
@@ -188,6 +190,8 @@ status_t gen_legal_moves(ChessState *state, List *moves){
     gen_king_moves(state, moves);
 
     legalize_moves(state, moves);
+    
+    return STAT_SUCCESS;
 }
 
 
@@ -275,7 +279,7 @@ status_t gen_knight_moves(ChessState *state, List *moves){
     sqr_t src, target;
     while ((src = pop_lsb(&rest_knights)) != -1){
         BB_t rest_attcks = attck_bbs.knight_attck[src];
-        while ((target = pop_lsb(&rest_knights)) != -1){
+        while ((target = pop_lsb(&rest_attcks)) != -1){
             
             /* Target occupied by same color */
             if (sqr_to_bb(target) & same_color_bb)
@@ -446,7 +450,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
 
     sqr_t src, target;
-    
+    src = pop_lsb(&state->piece_bbs[WHITE_QUEEN]);
     /* Rook moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 7; i++){
         target = N(src, i);
@@ -652,10 +656,11 @@ bool in_check(ChessState *state, color_t side){
                 return true;
         }
     }
-
     else if (side == BLACK){
 
     }
+    
+    return STAT_SUCCESS;
 }
 
 

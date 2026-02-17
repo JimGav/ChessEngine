@@ -9,11 +9,15 @@ BB_t sqr_to_bb(sqr_t sqr){
 status_t set_one(BB_t *bb, sqr_t sqr){
     BB_t x = 1;
     *bb = *bb | (x << sqr);
+
+    return STAT_SUCCESS;
 }
 
 status_t set_zero(BB_t *bb, sqr_t sqr){
     BB_t x = ~1;
     *bb = *bb & (x << sqr);
+
+    return STAT_SUCCESS;
 }
 
 
