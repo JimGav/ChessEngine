@@ -33,9 +33,9 @@ status_t gen_start_state(ChessState *start_state){
     set_one(&piece_bbs[BLACK_QUEEN], d8);
     set_one(&piece_bbs[BLACK_KING], e8);
 
-    for (int i = 0; i < 8; i++){
-        set_one(&piece_bbs[WHITE_PAWN], a1+i);
-        set_one(&piece_bbs[BLACK_PAWN], a8+i);
+    for (int j = 0; j < 8; j++){
+        set_one(&piece_bbs[WHITE_PAWN], a2+j);
+        set_one(&piece_bbs[BLACK_PAWN], a7+j);
     }
 
     update_bbs(start_state);
