@@ -19,7 +19,7 @@ List *list_create(int (*compare_func)(void*,void*), void (*destroy_func)(void*))
 
 
 status_t list_insert(List *list, void *dt_ptr){
-    if (list == NULL || dt_ptr)
+    if (list == NULL || dt_ptr == NULL)
         return STAT_NULLPTR;
     
     ListNode *node = calloc(1, sizeof(ListNode));
