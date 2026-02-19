@@ -100,8 +100,7 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
             north(east(sqr, 1),2), south(east(sqr, 1), 2), 
         };
         for (int i = 0; i < 8; i++){
-            if (sqr == b1)printf("%d\n",targets[i]);
-            if (targets[i] != -1)
+            if (targets[i] != SQR_OUT)
                 set_one(&attck_bbs.knight_attck[sqr], targets[i]);
         }
         
