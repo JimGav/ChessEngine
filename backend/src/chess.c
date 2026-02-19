@@ -6,11 +6,55 @@
 #include "bitboard.h"
 #include "err.h"
 
+
+/* Global variables */
+ChessState state;
+
+
+/* Backend api */
+
+void engine_init(){
+    printf("Initializing engine\n");
+    gen_start_state(&state);
+    printf("Start state generated successfully\n");
+    gen_attck_bbs(&attck_bbs);
+    printf("Attack bitboards generated successfully\n");
+}
+
+Move *move_search();
+
+/* Returns whether a move is legal */
+//todo: optimize
+int move_legal(sqr_t src, sqr_t target){
+    List *move_list = list_create(&compare_moves, NULL); 
+    gen_legal_moves(&state, move_list);
+    ListNode *node = move_list->head;
+    printf("--- checking %d %d nn in %d moves\n", src, target, move_list->size);
+    while (node){
+        Move *move = node->dt_ptr;
+        print_move(*move);
+        node = node->next;
+    }
+    return 0;
+}
+
+
+status_t play_move(Move *move, ChessState *state){
+    assert(move != NULL);
+    assert(state != NULL);
+
+    set_zero(&state->piece_bbs[move->piece], move->origin);
+    set_one(&state->piece_bbs[move->piece], move->target);
+
+    update_bbs(state);
+
+    return STAT_SUCCESS;
+}
+
+
 status_t gen_start_state(ChessState *start_state){
 
-    if (start_state == NULL)
-        return STAT_NULLPTR;
-
+    assert(start_state != NULL);
     memset(start_state, 0, sizeof(ChessState));
     
     BB_t *piece_bbs = start_state->piece_bbs;
@@ -109,60 +153,60 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
         /* Bishop attack bb */
         attck_bbs.bishop_attck[sqr] = 0;
         for (int i = 1; i < 7; i++){
-            if (north_west(sqr, i) != -1)
+            if (north_west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
-            if (north_east(sqr, i) != -1)
+            if (north_east(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
-            if (south_west(sqr, i) != -1)
+            if (south_west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
-            if (south_east(sqr, i) != -1)
+            if (south_east(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
         }
         
         /* Rook attack bb */
         attck_bbs.rook_attck[sqr] = 0;
         for (int i = 1; i < 7; i++){
-            if (north(sqr, i) != -1)
+            if (north(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
-            if (west(sqr, i) != -1)
+            if (west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
-            if (east(sqr, i) != -1)
+            if (east(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
-            if (south(sqr, i) != -1)
+            if (south(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
         }
         
         /* King attack bb */
         attck_bbs.king_attck[sqr] = 0;
-        if (north(sqr, 1) != -1)
+        if (north(sqr, 1) != SQR_OUT)
             set_one(&attck_bbs.king_attck[sqr],sqr);
-        if (west(sqr, 1) != -1)
+        if (west(sqr, 1) != SQR_OUT)
             set_one(&attck_bbs.king_attck[sqr],sqr);
-        if (east(sqr, 1) != -1)
+        if (east(sqr, 1) != SQR_OUT)
             set_one(&attck_bbs.king_attck[sqr],sqr);
-        if (south(sqr, 1) != -1)
+        if (south(sqr, 1) != SQR_OUT)
             set_one(&attck_bbs.king_attck[sqr],sqr);
         
         /* Queen attack bb */
         attck_bbs.queen_attck[sqr] = 0;
         for (int i = 1; i < 7; i++){
             
-            if (north(sqr, i) != -1)
+            if (north(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (west(sqr, i) != -1)
+            if (west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (east(sqr, i) != -1)
+            if (east(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (south(sqr, i) != -1)
+            if (south(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
             
-            if (north_west(sqr, i) != -1)
+            if (north_west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (north_east(sqr, i) != -1)
+            if (north_east(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (south_west(sqr, i) != -1)
+            if (south_west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (south_east(sqr, i) != -1)
+            if (south_east(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
         }
     }
@@ -608,17 +652,6 @@ status_t legalize_moves(ChessState *state, List *moves){
 }
 
 
-status_t play_move(Move *move, ChessState *state){
-    assert(move != NULL);
-    assert(state != NULL);
-
-    set_zero(&state->piece_bbs[move->piece], move->origin);
-    set_one(&state->piece_bbs[move->piece], move->target);
-
-    update_bbs(state);
-
-    return STAT_SUCCESS;
-}
 
 status_t update_bbs(ChessState *state){
     assert(state != NULL);
