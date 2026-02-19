@@ -610,7 +610,8 @@ status_t gen_king_moves(ChessState *state, List *moves){
         state->black_bb;
         
     /* King moves */ // todo: optimize
-    sqr_t src = sqr_to_bb(king_bb);
+    BB_t rest_kings = king_bb;
+    sqr_t src = pop_lsb(&rest_kings);
     sqr_t target;
     BB_t rest_attcks = attck_bbs.king_attck[src];
     while ((target = pop_lsb(&rest_attcks)) != -1){ 
