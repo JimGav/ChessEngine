@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 #include "list.h"
 
 
@@ -23,12 +24,15 @@ status_t list_insert(List *list, void *dt_ptr){
         return STAT_NULLPTR;
     
     ListNode *node = calloc(1, sizeof(ListNode));
+    assert(node != NULL);
     node->dt_ptr = dt_ptr;
 
     if (list->head == NULL)
         list->head = node;
-    else
+    else{
         node->next = list->head;
+        list->head = node;
+    }
 
     list->size++;
     return STAT_SUCCESS;
