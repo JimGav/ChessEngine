@@ -34,10 +34,7 @@ sqr_t pop_lsb(BB_t *bb){
         *bb = *bb >> 1;
     }
     *bb = *bb >> 1;
-    for (sqr_t sqr2 = sqr; sqr2 != a1; sqr2--){
-        *bb = *bb << 1;        
-    }
-    *bb = *bb << 1;
+    *bb = *bb << (sqr+1);
 
     return sqr;
 }
