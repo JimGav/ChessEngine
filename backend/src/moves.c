@@ -27,42 +27,53 @@ void destroy_move(Move *move){
 }
 
 void print_move(Move move){
+
+    char files[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+    char ranks[] = {'1', '2', '3', '4', '5', '6', '7', '8'};
+
+    char src[3] = {0};
+    char target[3] = {0};
+    src[0] = files[BOARD_FILE(move.origin)];
+    src[1] = ranks[BOARD_RANK(move.origin)];
+    target[0] = files[BOARD_FILE(move.target)];
+    target[1] = ranks[BOARD_RANK(move.target)];
+
     switch (move.piece){
         case WHITE_PAWN:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "WHITE_PAWN");
+            printf("(%s)->(%s) piece %s\n", src, target, "WHITE_PAWN");
             break;
         case WHITE_KNIGHT:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "WHITE_KNIGHT");
+            printf("(%s)->(%s) piece %s\n", src, target, "WHITE_KNIGHT");
             break;
         case WHITE_BISHOP:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "WHITE_BISHOP");
+            printf("(%s)->(%s) piece %s\n", src, target, "WHITE_BISHOP");
             break;
         case WHITE_ROOK:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "WHITE_ROOK");
+            printf("(%s)->(%s) piece %s\n", src, target, "WHITE_ROOK");
             break;
         case WHITE_KING:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "WHITE_KING");
+            printf("(%s)->(%s) piece %s\n", src, target, "WHITE_KING");
             break;
         case WHITE_QUEEN:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "WHITE_QUEEN");
+            printf("(%s)->(%s) piece %s\n", src, target, "WHITE_QUEEN");
             break;
         case BLACK_PAWN:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "BLACK_PAWN");
+            printf("(%s)->(%s) piece %s\n", src, target, "BLACK_PAWN");
             break;
         case BLACK_KNIGHT:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "BLACK_KNIGHT");
+            printf("(%s)->(%s) piece %s\n", src, target, "BLACK_KNIGHT");
             break;
         case BLACK_BISHOP:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "BLACK_BISHOP");
+            printf("(%s)->(%s) piece %s\n", src, target, "BLACK_BISHOP");
             break;
         case BLACK_ROOK:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "BLACK_ROOK");
+            printf("(%s)->(%s) piece %s\n", src, target, "BLACK_ROOK");
             break;
         case BLACK_KING:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "BLACK_KING");
+            printf("(%s)->(%s) piece %s\n", src, target, "BLACK_KING");
             break;
         case BLACK_QUEEN:
-            printf("(%d)->(%d) piece %s\n", move.origin, move.target, "BLACK_QUEEN");
+            printf("(%s)->(%s) piece %s\n", src, target, "BLACK_QUEEN");
             break;
         default:
             exit(1);
