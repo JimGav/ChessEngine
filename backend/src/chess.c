@@ -214,7 +214,7 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
             list_insert(moves, move);
 
             target = N(src, 2);
-            if (BOARD_FILE(src) != 1 || sqr_to_bb(target) & state->all_bb)
+            if (BOARD_RANK(src) != 1 || (sqr_to_bb(target) & state->all_bb))
                 continue;
             move = create_move(src, target, WHITE, WHITE_PAWN);
             list_insert(moves, move);
@@ -241,7 +241,7 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
             list_insert(moves, move);
 
             target = S(src, 2);
-            if (BOARD_FILE(src) != 6 || sqr_to_bb(target) & state->all_bb)
+            if (BOARD_RANK(src) != 6 || (sqr_to_bb(target) & state->all_bb))
                 continue;
             move = create_move(src, target, BLACK, BLACK_PAWN);
             list_insert(moves, move);
