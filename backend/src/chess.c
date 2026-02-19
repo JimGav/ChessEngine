@@ -93,76 +93,77 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
         
         /* Knight attack bb */
         attck_bbs.knight_attck[sqr] = 0;
-        for (int i = -2; i <= 2; i++){
-            for (int j = -2; j <= 2; j++){
-                if (abs(i) + abs(j) == 3){
-                    sqr_t target = N(sqr, i);
-                    if (target != -1) target = W(target, j); 
-                    if (target != -1){
-                        set_one(&attck_bbs.knight_attck[sqr], sqr);
-                    }
-                }
-            }
+        sqr_t targets[] = {
+            north(west(sqr, 2),1), south(west(sqr, 2), 1), 
+            north(east(sqr, 2),1), south(east(sqr, 2), 1), 
+            north(west(sqr, 1),2), south(west(sqr, 1), 2), 
+            north(east(sqr, 1),2), south(east(sqr, 1), 2), 
+        };
+        for (int i = 0; i < 8; i++){
+            if (sqr == b1)printf("%d\n",targets[i]);
+            if (targets[i] != -1)
+                set_one(&attck_bbs.knight_attck[sqr], targets[i]);
         }
+        
         
 
         /* Bishop attack bb */
         attck_bbs.bishop_attck[sqr] = 0;
         for (int i = 1; i < 7; i++){
-            if (NW(sqr, i) != -1)
+            if (north_west(sqr, i) != -1)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
-            if (NE(sqr, i) != -1)
+            if (north_east(sqr, i) != -1)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
-            if (SW(sqr, i) != -1)
+            if (south_west(sqr, i) != -1)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
-            if (SE(sqr, i) != -1)
+            if (south_east(sqr, i) != -1)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
         }
         
         /* Rook attack bb */
         attck_bbs.rook_attck[sqr] = 0;
         for (int i = 1; i < 7; i++){
-            if (N(sqr, i) != -1)
+            if (north(sqr, i) != -1)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
-            if (W(sqr, i) != -1)
+            if (west(sqr, i) != -1)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
-            if (E(sqr, i) != -1)
+            if (east(sqr, i) != -1)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
-            if (S(sqr, i) != -1)
+            if (south(sqr, i) != -1)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
         }
         
         /* King attack bb */
         attck_bbs.king_attck[sqr] = 0;
-        if (N(sqr, 1) != -1)
+        if (north(sqr, 1) != -1)
             set_one(&attck_bbs.king_attck[sqr],sqr);
-        if (W(sqr, 1) != -1)
+        if (west(sqr, 1) != -1)
             set_one(&attck_bbs.king_attck[sqr],sqr);
-        if (E(sqr, 1) != -1)
+        if (east(sqr, 1) != -1)
             set_one(&attck_bbs.king_attck[sqr],sqr);
-        if (S(sqr, 1) != -1)
+        if (south(sqr, 1) != -1)
             set_one(&attck_bbs.king_attck[sqr],sqr);
         
         /* Queen attack bb */
         attck_bbs.queen_attck[sqr] = 0;
         for (int i = 1; i < 7; i++){
             
-            if (N(sqr, i) != -1)
+            if (north(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (W(sqr, i) != -1)
+            if (west(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (E(sqr, i) != -1)
+            if (east(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (S(sqr, i) != -1)
+            if (south(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
             
-            if (NW(sqr, i) != -1)
+            if (north_west(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (NE(sqr, i) != -1)
+            if (north_east(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (SW(sqr, i) != -1)
+            if (south_west(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
-            if (SE(sqr, i) != -1)
+            if (south_east(sqr, i) != -1)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
         }
     }
@@ -207,25 +208,25 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
     sqr_t src,target;
     while ((src = pop_lsb(&rest_pawns)) != -1){
         if (state->turn == WHITE){
-            target = N(src, 1);
+            target = north(src, 1);
             if (target == -1 || (sqr_to_bb(target) & state->all_bb))
                 continue;
             Move *move = create_move(src, target, WHITE, WHITE_PAWN);
             list_insert(moves, move);
 
-            target = N(src, 2);
-            if (BOARD_RANK(src) != 1 || (sqr_to_bb(target) & state->all_bb))
+            target = north(src, 2);
+            if (get_rank(src) != 1 || (sqr_to_bb(target) & state->all_bb))
                 continue;
             move = create_move(src, target, WHITE, WHITE_PAWN);
             list_insert(moves, move);
 
             /* Captures */
-            target = NW(src, 1);
+            target = north_west(src, 1);
             if (target != -1 && (sqr_to_bb(target) & state->black_bb)){
                 move = create_move(src, target, WHITE, WHITE_PAWN);
                 list_insert(moves, move);
             }
-            target = NE(src, 1);
+            target = north_east(src, 1);
             if (target != -1 && (sqr_to_bb(target) & state->black_bb)){
                 move = create_move(src, target, WHITE, WHITE_PAWN);
                 list_insert(moves, move);
@@ -234,25 +235,25 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
             // todo: en passant
         }
         else if (state->turn == BLACK){
-            target = S(src, 1);
+            target = south(src, 1);
             if (target == -1 || (sqr_to_bb(target) & state->all_bb))
                 continue;
             Move *move = create_move(src, target, BLACK, BLACK_PAWN);
             list_insert(moves, move);
 
-            target = S(src, 2);
-            if (BOARD_RANK(src) != 6 || (sqr_to_bb(target) & state->all_bb))
+            target = south(src, 2);
+            if (get_rank(src) != 6 || (sqr_to_bb(target) & state->all_bb))
                 continue;
             move = create_move(src, target, BLACK, BLACK_PAWN);
             list_insert(moves, move);
 
             /* Captures */
-            target = SW(src, 1);
+            target = south_west(src, 1);
             if (target != -1 && (sqr_to_bb(target) & state->white_bb)){
                 move = create_move(src, target, BLACK, BLACK_PAWN);
                 list_insert(moves, move);
             }
-            target = SE(src, 1);
+            target = south_east(src, 1);
             if (target != -1 && (sqr_to_bb(target) & state->white_bb)){
                 move = create_move(src, target, BLACK, BLACK_PAWN);
                 list_insert(moves, move);
@@ -313,7 +314,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
     while ((src = pop_lsb(&rest_bishops)) != -1){
         
         for (int i = 1; i < 7; i++){
-            target = NE(src, i);
+            target = north_east(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -326,7 +327,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
 
 
         for (int i = 1; i < 7; i++){
-            target = NW(src, i);
+            target = north_west(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -338,7 +339,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
         }
 
         for (int i = 1; i < 7; i++){
-            target = SE(src, i);
+            target = south_east(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -350,7 +351,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
         }
 
         for (int i = 1; i < 7; i++){
-            target = SW(src, i);
+            target = south_west(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -385,7 +386,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
     while ((src = pop_lsb(&rest_rooks)) != -1){
         
         for (int i = 1; i < 7; i++){
-            target = N(src, i);
+            target = north(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -398,7 +399,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
 
 
         for (int i = 1; i < 7; i++){
-            target = W(src, i);
+            target = west(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -410,7 +411,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
         }
 
         for (int i = 1; i < 7; i++){
-            target = S(src, i);
+            target = south(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -422,7 +423,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
         }
 
         for (int i = 1; i < 7; i++){
-            target = E(src, i);
+            target = east(src, i);
             if (target == -1 || (sqr_to_bb(target) & same_color_bb))
                 break;
             
@@ -453,7 +454,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     src = pop_lsb(&state->piece_bbs[WHITE_QUEEN]);
     /* Rook moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 7; i++){
-        target = N(src, i);
+        target = north(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -466,7 +467,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
 
     for (int i = 1; i < 7; i++){
-        target = W(src, i);
+        target = west(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -478,7 +479,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
     for (int i = 1; i < 7; i++){
-        target = S(src, i);
+        target = south(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -490,7 +491,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
     for (int i = 1; i < 7; i++){
-        target = E(src, i);
+        target = east(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -503,7 +504,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     /* Bishop moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 7; i++){
-        target = NE(src, i);
+        target = north_east(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -516,7 +517,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
 
     for (int i = 1; i < 7; i++){
-        target = NW(src, i);
+        target = north_west(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -528,7 +529,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
     for (int i = 1; i < 7; i++){
-        target = SE(src, i);
+        target = south_east(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         
@@ -540,7 +541,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
     for (int i = 1; i < 7; i++){
-        target = SW(src, i);
+        target = south_west(src, i);
         if (target == -1 || (sqr_to_bb(target) & same_color_bb))
             break;
         

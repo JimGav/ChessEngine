@@ -33,10 +33,10 @@ void print_move(Move move){
 
     char src[3] = {0};
     char target[3] = {0};
-    src[0] = files[BOARD_FILE(move.origin)];
-    src[1] = ranks[BOARD_RANK(move.origin)];
-    target[0] = files[BOARD_FILE(move.target)];
-    target[1] = ranks[BOARD_RANK(move.target)];
+    src[0] = files[get_file(move.origin)];
+    src[1] = ranks[get_rank(move.origin)];
+    target[0] = files[get_file(move.target)];
+    target[1] = ranks[get_rank(move.target)];
 
     switch (move.piece){
         case WHITE_PAWN:
