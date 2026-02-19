@@ -17,10 +17,8 @@ all:
 	$(CC) -c $(SRC_DIR)/list.c -o $(OBJ_DIR)/list.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/moves.c -o $(OBJ_DIR)/moves.o $(CFLAGS)
 
-
-lib:
 	mkdir -p lib
 	gcc $(OBJ) -shared -o $(LIB_DIR)/engine.so
 
 clean:
-	rm -rf obj/* bin/*
+	rm -rf obj/* bin/* lib/*
