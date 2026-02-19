@@ -1,8 +1,8 @@
 #ifndef SQR_H
 #define SQR_H
 
-#define BOARD_RANK(sqr) (sqr % 8)
-#define BOARD_FILE(sqr) (sqr / 8)
+#define BOARD_RANK(sqr) (sqr / 8)
+#define BOARD_FILE(sqr) (sqr % 8)
 
 #define VALID_SQR(sqr) (sqr >= a1 && sqr <= h8)
 
