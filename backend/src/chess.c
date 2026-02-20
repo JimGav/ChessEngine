@@ -252,7 +252,7 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
     while ((src = pop_lsb(&rest_pawns)) != -1){
         if (state->turn == WHITE){
             target = north(src, 1);
-            if (target == -1 || (sqr_to_bb(target) & state->all_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & state->all_bb))
                 continue;
             Move *move = create_move(src, target, WHITE, WHITE_PAWN);
             list_insert(moves, move);
@@ -279,7 +279,7 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
         }
         else if (state->turn == BLACK){
             target = south(src, 1);
-            if (target == -1 || (sqr_to_bb(target) & state->all_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & state->all_bb))
                 continue;
             Move *move = create_move(src, target, BLACK, BLACK_PAWN);
             list_insert(moves, move);
@@ -358,7 +358,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
         
         for (int i = 1; i < 7; i++){
             target = north_east(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP);
@@ -371,7 +371,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
 
         for (int i = 1; i < 7; i++){
             target = north_west(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP);
@@ -383,7 +383,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
 
         for (int i = 1; i < 7; i++){
             target = south_east(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP);
@@ -395,7 +395,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
 
         for (int i = 1; i < 7; i++){
             target = south_west(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP);
@@ -430,7 +430,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
         
         for (int i = 1; i < 7; i++){
             target = north(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK);
@@ -443,7 +443,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
 
         for (int i = 1; i < 7; i++){
             target = west(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK);
@@ -455,7 +455,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
 
         for (int i = 1; i < 7; i++){
             target = south(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK);
@@ -467,7 +467,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
 
         for (int i = 1; i < 7; i++){
             target = east(src, i);
-            if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+            if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
             Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK);
@@ -498,7 +498,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     /* Rook moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 7; i++){
         target = north(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -511,7 +511,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     for (int i = 1; i < 7; i++){
         target = west(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -523,7 +523,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     for (int i = 1; i < 7; i++){
         target = south(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -535,7 +535,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     for (int i = 1; i < 7; i++){
         target = east(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -548,7 +548,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     /* Bishop moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 7; i++){
         target = north_east(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -561,7 +561,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     for (int i = 1; i < 7; i++){
         target = north_west(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -573,7 +573,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     for (int i = 1; i < 7; i++){
         target = south_east(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
@@ -585,7 +585,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     for (int i = 1; i < 7; i++){
         target = south_west(src, i);
-        if (target == -1 || (sqr_to_bb(target) & same_color_bb))
+        if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN);
