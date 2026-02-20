@@ -79,3 +79,8 @@ void print_move(Move move){
             exit(1);
     }
 }
+
+
+bool double_pawn_move(Move *move){
+    return abs(get_rank(move->origin) - get_rank(move->target)) == 2;
+}
