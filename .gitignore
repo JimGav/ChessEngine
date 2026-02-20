@@ -2,3 +2,4 @@ frontend/__pycache__/
 backend/obj
 .vscode
 lib
+bin
