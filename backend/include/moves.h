@@ -10,9 +10,10 @@ typedef struct {
     sqr_t target;
     color_t side;
     piece_t piece;
+    bool is_ep;
 } Move;
 
-Move *create_move(sqr_t origin, sqr_t target, color_t side, piece_t piece);
+Move *create_move(sqr_t origin, sqr_t target, color_t side, piece_t piece, bool is_ep);
 int compare_moves(void *m1, void *m2);
 void print_move(Move move);
 void destroy_move(Move *move);
