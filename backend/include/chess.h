@@ -10,7 +10,7 @@
 #include "types.h"
 
 
-attck_bbs_t attck_bbs;
+extern attck_bbs_t attck_bbs;
 
 
 typedef struct {

@@ -130,7 +130,7 @@ status_t gen_successors(ChessState *state, List *successors){
     Generates an attack bitboard for each piece type and stores it in bbs 
     bbs = bb array of array of bbs for each piece type
 */
-extern attck_bbs_t attck_bbs;
+attck_bbs_t attck_bbs;
 status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
 
     for (sqr_t sqr = a1; sqr <= h8; sqr++){
