@@ -649,11 +649,10 @@ status_t legalize_moves(ChessState *state, List *moves){
 
         /* Simultate move on a dummy state */
         ChessState dummy_state = *state;
-        color_t turn = state->turn;
         make_move(move, &dummy_state);
         
         /* If after playing move player is in check remove */
-        if (in_check(state, turn))
+        if (in_check(&dummy_state, state->turn))
             list_remove(moves, move);
         
         node = next;
