@@ -516,9 +516,12 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         state->black_bb:
         state->white_bb;
 
+    BB_t rest_queens = state->turn == WHITE ?
+        state->piece_bbs[WHITE_QUEEN]:
+        state->piece_bbs[BLACK_QUEEN];
 
     sqr_t src, target;
-    src = pop_lsb(&state->piece_bbs[WHITE_QUEEN]);
+    src = pop_lsb(&rest_queens);
     /* Rook moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 7; i++){
         target = north(src, i);
