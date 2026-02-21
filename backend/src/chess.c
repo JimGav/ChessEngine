@@ -264,17 +264,24 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
     sqr_t src,target;
     while ((src = pop_lsb(&rest_pawns)) != -1){
         if (state->turn == WHITE){
+            
+            /* Single pawn push */
             target = north(src, 1);
-            if (target == SQR_OUT || (sqr_to_bb(target) & state->all_bb))
+            if (target == SQR_OUT)
                 continue;
-            Move *move = create_move(src, target, WHITE, WHITE_PAWN, false);
-            list_insert(moves, move);
 
+            Move *move;
+            if (!(sqr_to_bb(target) & state->all_bb)){
+                move = create_move(src, target, WHITE, WHITE_PAWN, false);
+                list_insert(moves, move);
+            }
+
+            /* Double pawn push */
             target = north(src, 2);
-            if (get_rank(src) != 1 || (sqr_to_bb(target) & state->all_bb))
-                continue;
-            move = create_move(src, target, WHITE, WHITE_PAWN, false);
-            list_insert(moves, move);
+            if (get_rank(src) == 1 && !(sqr_to_bb(target) & state->all_bb)){
+                move = create_move(src, target, WHITE, WHITE_PAWN, false);
+                list_insert(moves, move);
+            }
 
             /* Captures */
             target = north_west(src, 1);
@@ -289,17 +296,24 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
             }        
         }
         else if (state->turn == BLACK){
+            
+            /* Single pawn push */
             target = south(src, 1);
-            if (target == SQR_OUT || (sqr_to_bb(target) & state->all_bb))
+            if (target == SQR_OUT)
                 continue;
-            Move *move = create_move(src, target, BLACK, BLACK_PAWN, false);
-            list_insert(moves, move);
 
+            Move *move;
+            if (!(sqr_to_bb(target) & state->all_bb)){
+                move = create_move(src, target, BLACK, BLACK_PAWN, false);
+                list_insert(moves, move);
+            }
+
+            /* Double pawn push */
             target = south(src, 2);
-            if (get_rank(src) != 6 || (sqr_to_bb(target) & state->all_bb))
-                continue;
-            move = create_move(src, target, BLACK, BLACK_PAWN, false);
-            list_insert(moves, move);
+            if (get_rank(src) == 6 && !(sqr_to_bb(target) & state->all_bb)){
+                move = create_move(src, target, BLACK, BLACK_PAWN, false);
+                list_insert(moves, move);
+            }
 
             /* Captures */
             target = south_west(src, 1);
@@ -308,7 +322,7 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
                 list_insert(moves, move);
             }
             target = south_east(src, 1);
-            if (target != SQR_OUT && ((sqr_to_bb(target) & state->white_bb)  || (target == state->ep_target))){
+            if (target != SQR_OUT && ((sqr_to_bb(target) & state->white_bb ) || (target == state->ep_target))){
                 move = create_move(src, target, BLACK, BLACK_PAWN, target == state->ep_target);
                 list_insert(moves, move);
             }
