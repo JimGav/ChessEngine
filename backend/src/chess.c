@@ -33,6 +33,10 @@ int move_legal(sqr_t src, sqr_t target){
     while (node){
         Move *move = node->dt_ptr;
         print_move(*move);
+        
+        if (move->origin == src && move->target == target)
+            return 1;
+
         node = node->next;
     }
     return 0;
