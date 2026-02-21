@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "chess.h"
 #include "bitboard.h"
 
@@ -27,10 +28,18 @@ u64 perft(ChessState state, int depth)
 
 
 int main(int argc, char *argv[]){
+
+    u64 perft_res[] = {
+        1, 20, 400, 8902, 197281, 4865609, 119060324, 3195901860, 84998978956, 2439530234167, 69352859712417
+    };
+
     for (int i = 0; i < atoi(argv[1]); i++){
         ChessState cstate;
         gen_start_state(&cstate);
         gen_attck_bbs();
-        printf("PERFT(%d) =  %lld\n", i, perft(cstate, i));
+        
+        u64 p = perft(cstate, i);
+        printf("PERFT(%d) =  %lld\n", i, p);
+        assert(p == perft_res[i]);
     }
 }
