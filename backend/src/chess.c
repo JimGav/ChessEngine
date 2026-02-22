@@ -14,6 +14,12 @@ ChessState state;
 status_t make_move_on(Move *move, ChessState *state){
     assert(state != NULL);
 
+    /* Update captured piece bb */
+    piece_t captured = get_piece_on_sqr(state, move->target);
+    if (captured != PIECE_T_LAST)
+        set_zero(&state->piece_bbs[captured], move->target);
+    
+    /* Update moving piece bb */
     set_zero(&state->piece_bbs[move->piece], move->origin);
     set_one(&state->piece_bbs[move->piece], move->target);
 
