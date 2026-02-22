@@ -15,18 +15,20 @@ status_t make_move_on(Move *move, ChessState *state){
     assert(state != NULL);
 
     /* Update captured piece bb */
-    piece_t captured = get_piece_on_sqr(state, move->target);
-    if (captured != PIECE_T_LAST)
+    if (!move->is_ep){
+        piece_t captured = get_piece_on_sqr(state, move->target);
         set_zero(&state->piece_bbs[captured], move->target);
+    }
+    else {
+        piece_t captured = get_piece_on_sqr(state, state->ep_target);
+        set_zero(&state->piece_bbs[captured], state->ep_target);
+    }   
     
     /* Update moving piece bb */
     set_zero(&state->piece_bbs[move->piece], move->origin);
     set_one(&state->piece_bbs[move->piece], move->target);
 
     update_bbs(state);
-
-    /* Update turn */
-    state->turn = (state->turn == WHITE) ? BLACK : WHITE;
 
     /* Update state->ep_target */
     if (double_pawn_move(move)){
@@ -36,7 +38,10 @@ status_t make_move_on(Move *move, ChessState *state){
     }
     else
         state->ep_target = SQR_OUT;
-
+    
+    /* Update turn */
+    state->turn = (state->turn == WHITE) ? BLACK : WHITE;
+    
     return STAT_SUCCESS;
 }
 
