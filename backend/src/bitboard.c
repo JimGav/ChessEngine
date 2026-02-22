@@ -14,8 +14,8 @@ status_t set_one(BB_t *bb, sqr_t sqr){
 }
 
 status_t set_zero(BB_t *bb, sqr_t sqr){
-    BB_t x = ~1;
-    *bb = *bb & (x << sqr);
+    BB_t x = ~(1 << sqr);
+    *bb = *bb & x;
 
     return STAT_SUCCESS;
 }
