@@ -687,7 +687,21 @@ bool in_check(ChessState *state, color_t side){
         }
     }
     else if (side == BLACK){
-
+        BB_t rest_white = state->white_bb;
+        sqr_t src;
+        while ((src = pop_lsb(&rest_white)) != -1){
+            piece_t piece = get_piece_on_sqr(state, src);
+            if (piece == BLACK_KNIGHT && (attck_bbs.knight_attck[src] & state->piece_bbs[BLACK_KING]))
+                return true;
+            if (piece == BLACK_BISHOP && (attck_bbs.bishop_attck[src] & state->piece_bbs[BLACK_KING]))
+                return true;
+            if (piece == BLACK_ROOK && (attck_bbs.rook_attck[src] & state->piece_bbs[BLACK_KING]))
+                return true;
+            if (piece == BLACK_QUEEN && (attck_bbs.queen_attck[src] & state->piece_bbs[BLACK_KING]))
+                return true;
+            if (piece == BLACK_KING && (attck_bbs.king_attck[src] & state->piece_bbs[BLACK_KING]))
+                return true;
+        }
     }
     
     return STAT_SUCCESS;
