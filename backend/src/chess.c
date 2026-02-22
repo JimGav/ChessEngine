@@ -408,8 +408,8 @@ status_t gen_rook_moves(ChessState *state, List *moves){
     assert(moves != NULL);
 
     BB_t rest_rooks = state->turn == WHITE ? 
-        state->piece_bbs[WHITE_KNIGHT]: 
-        state->piece_bbs[BLACK_KNIGHT];
+        state->piece_bbs[WHITE_ROOK]: 
+        state->piece_bbs[BLACK_ROOK];
     BB_t same_color_bb = state->turn == WHITE ?
         state->white_bb:
         state->black_bb;
