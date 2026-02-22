@@ -19,6 +19,9 @@ status_t make_move_on(Move *move, ChessState *state){
 
     update_bbs(state);
 
+    /* Update turn */
+    state->turn = (state->turn == WHITE) ? BLACK : WHITE;
+
     /* Update state->ep_target */
     if (double_pawn_move(move)){
         state->ep_target = (move->side == WHITE) ? 
