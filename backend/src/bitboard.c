@@ -38,3 +38,14 @@ sqr_t pop_lsb(BB_t *bb){
 
     return sqr;
 }
+
+
+int count(BB_t bb){
+    int c = 0;
+    for (sqr_t sqr = a1; sqr <= h8; sqr++){
+        if (bb & 1)
+            c++;
+        bb = bb >> 1;
+    }
+    return c;
+}
