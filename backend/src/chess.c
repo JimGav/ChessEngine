@@ -11,40 +11,7 @@
 ChessState state;
 
 
-/* Backend api */
-
-void engine_init(){
-    printf("Initializing engine\n");
-    gen_start_state(&state);
-    printf("Start state generated successfully\n");
-    gen_attck_bbs(&attck_bbs);
-    printf("Attack bitboards generated successfully\n");
-}
-
-Move *move_search();
-
-/* Returns whether a move is legal */
-//todo: optimize
-int move_legal(sqr_t src, sqr_t target){
-    List *move_list = list_create(&compare_moves, NULL); 
-    gen_legal_moves(&state, move_list);
-    ListNode *node = move_list->head;
-    printf("--- checking %d %d nn in %d moves\n", src, target, move_list->size);
-    while (node){
-        Move *move = node->dt_ptr;
-        print_move(*move);
-        
-        if (move->origin == src && move->target == target)
-            return 1;
-
-        node = node->next;
-    }
-    return 0;
-}
-
-
-status_t make_move(Move *move, ChessState *state){
-    assert(move != NULL);
+status_t make_move_on(Move *move, ChessState *state){
     assert(state != NULL);
 
     set_zero(&state->piece_bbs[move->piece], move->origin);
@@ -116,7 +83,7 @@ status_t gen_successors(ChessState *state, List *successors){
     assert(state != NULL);
     assert(successors != NULL);
 
-    List *move_list = list_create(NULL, NULL); //todo
+    List *move_list = list_create(compare_moves, NULL); //todo
     gen_legal_moves(state, move_list);
     
     ListNode *node = move_list->head;
@@ -127,7 +94,7 @@ status_t gen_successors(ChessState *state, List *successors){
         Move *move = node->dt_ptr;
         ChessState *succ = malloc(sizeof(*succ));
         *succ = *state;
-        make_move(move, succ);
+        make_move_on(move, succ);
         succ->turn = state->turn == WHITE ? BLACK : WHITE;
         list_insert(successors, succ);
 
@@ -666,7 +633,7 @@ status_t legalize_moves(ChessState *state, List *moves){
 
         /* Simultate move on a dummy state */
         ChessState dummy_state = *state;
-        make_move(move, &dummy_state);
+        make_move_on(move, &dummy_state);
         
         /* If after playing move player is in check remove */
         if (in_check(&dummy_state, state->turn))

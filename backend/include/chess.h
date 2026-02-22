@@ -38,7 +38,7 @@ status_t gen_rook_moves(ChessState *state, List *moves);
 status_t gen_queen_moves(ChessState *state, List *moves);
 status_t gen_king_moves(ChessState *state, List *moves);
 status_t legalize_moves(ChessState *state, List *moves);
-status_t play_move(Move *move, ChessState *state);
+status_t make_move_on(Move *move, ChessState *state);
 status_t update_bbs(ChessState *state);
 bool in_check(ChessState *state, color_t side);
 piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr);

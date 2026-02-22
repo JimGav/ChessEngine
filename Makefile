@@ -18,6 +18,7 @@ all:
 	$(CC) -c $(SRC_DIR)/list.c -o $(OBJ_DIR)/list.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/moves.c -o $(OBJ_DIR)/moves.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/sqr.c -o $(OBJ_DIR)/sqr.o $(CFLAGS)
+	$(CC) -c $(SRC_DIR)/interface.c -o $(OBJ_DIR)/interface.o $(CFLAGS)
 
 	mkdir -p $(LIB_DIR)
 	$(CC) $(OBJ) -shared -o $(LIB_DIR)/engine.so
@@ -36,5 +37,6 @@ tests:
 	$(CC) -c $(SRC_DIR)/list.c -o $(OBJ_DIR)/list.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/moves.c -o $(OBJ_DIR)/moves.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/sqr.c -o $(OBJ_DIR)/sqr.o $(CFLAGS)
+	$(CC) -c $(SRC_DIR)/interface.c -o $(OBJ_DIR)/interface.o $(CFLAGS)
 	
 	$(CC) $(OBJ) $(TEST_DIR)/perft.c -o $(BIN_DIR)/perft -I $(INCLUDE_DIR)
