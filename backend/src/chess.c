@@ -679,43 +679,28 @@ status_t update_bbs(ChessState *state){
 
 bool in_check(ChessState *state, color_t side){
     assert(state != NULL);
+    
+    List *move_list = list_create(compare_moves, NULL);
+    ChessState dummy_state = *state; 
+    dummy_state.turn = (side == WHITE) ? BLACK : WHITE;
+    gen_pawn_moves(&dummy_state, move_list);
+    gen_knight_moves(&dummy_state, move_list);
+    gen_bishop_moves(&dummy_state, move_list);
+    gen_rook_moves(&dummy_state, move_list);
+    gen_king_moves(&dummy_state, move_list);
+    gen_queen_moves(&dummy_state, move_list);
 
-    if (side == WHITE){
-        BB_t rest_black = state->black_bb;
-        sqr_t src;
-        while ((src = pop_lsb(&rest_black)) != -1){
-            piece_t piece = get_piece_on_sqr(state, src);
-            if (piece == BLACK_KNIGHT && (attck_bbs.knight_attck[src] & state->piece_bbs[WHITE_KING]))
-                return true;
-            if (piece == BLACK_BISHOP && (attck_bbs.bishop_attck[src] & state->piece_bbs[WHITE_KING]))
-                return true;
-            if (piece == BLACK_ROOK && (attck_bbs.rook_attck[src] & state->piece_bbs[WHITE_KING]))
-                return true;
-            if (piece == BLACK_QUEEN && (attck_bbs.queen_attck[src] & state->piece_bbs[WHITE_KING]))
-                return true;
-            if (piece == BLACK_KING && (attck_bbs.king_attck[src] & state->piece_bbs[WHITE_KING]))
-                return true;
-        }
-    }
-    else if (side == BLACK){
-        BB_t rest_white = state->white_bb;
-        sqr_t src;
-        while ((src = pop_lsb(&rest_white)) != -1){
-            piece_t piece = get_piece_on_sqr(state, src);
-            if (piece == BLACK_KNIGHT && (attck_bbs.knight_attck[src] & state->piece_bbs[BLACK_KING]))
-                return true;
-            if (piece == BLACK_BISHOP && (attck_bbs.bishop_attck[src] & state->piece_bbs[BLACK_KING]))
-                return true;
-            if (piece == BLACK_ROOK && (attck_bbs.rook_attck[src] & state->piece_bbs[BLACK_KING]))
-                return true;
-            if (piece == BLACK_QUEEN && (attck_bbs.queen_attck[src] & state->piece_bbs[BLACK_KING]))
-                return true;
-            if (piece == BLACK_KING && (attck_bbs.king_attck[src] & state->piece_bbs[BLACK_KING]))
-                return true;
-        }
+    ListNode *node = move_list->head;
+    while (node){
+        Move *move = node->dt_ptr;
+        if (side == WHITE && get_piece_on_sqr(&dummy_state, move->target) == WHITE_KING)
+            return true;
+        if (side == BLACK && get_piece_on_sqr(&dummy_state, move->target) == BLACK_KING)
+            return true;
+        node = node->next;
     }
     
-    return STAT_SUCCESS;
+    return false;
 }
 
 
