@@ -258,9 +258,9 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
             }
 
             /* Double pawn push */
-            target = north(src, 2);
-            if (get_rank(src) == 1 && !(sqr_to_bb(target) & state->all_bb)){
-                move = create_move(src, target, WHITE, WHITE_PAWN, false);
+            sqr_t target2 = north(src, 2);
+            if ((get_rank(src) == 1) && !(sqr_to_bb(target) & state->all_bb) && !(sqr_to_bb(target2) & state->all_bb)){
+                move = create_move(src, target2, WHITE, WHITE_PAWN, false);
                 list_insert(moves, move);
             }
 
@@ -290,9 +290,9 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
             }
 
             /* Double pawn push */
-            target = south(src, 2);
-            if (get_rank(src) == 6 && !(sqr_to_bb(target) & state->all_bb)){
-                move = create_move(src, target, BLACK, BLACK_PAWN, false);
+            sqr_t target2 = south(src, 2);
+            if ((get_rank(src) == 6) && !(sqr_to_bb(target) & state->all_bb) && !(sqr_to_bb(target2) & state->all_bb)){
+                move = create_move(src, target2, BLACK, BLACK_PAWN, false);
                 list_insert(moves, move);
             }
 
