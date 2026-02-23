@@ -148,60 +148,68 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
         attck_bbs.bishop_attck[sqr] = 0;
         for (int i = 1; i < 8; i++){
             if (north_west(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.bishop_attck[sqr],sqr);
+                set_one(&attck_bbs.bishop_attck[sqr],north_west(sqr,i));
             if (north_east(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.bishop_attck[sqr],sqr);
+                set_one(&attck_bbs.bishop_attck[sqr],north_east(sqr, i));
             if (south_west(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.bishop_attck[sqr],sqr);
+                set_one(&attck_bbs.bishop_attck[sqr],south_west(sqr, i));
             if (south_east(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.bishop_attck[sqr],sqr);
+                set_one(&attck_bbs.bishop_attck[sqr],south_east(sqr, i));
         }
         
         /* Rook attack bb */
         attck_bbs.rook_attck[sqr] = 0;
         for (int i = 1; i < 8; i++){
             if (north(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.rook_attck[sqr],sqr);
+                set_one(&attck_bbs.rook_attck[sqr],north(sqr, i));
             if (west(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.rook_attck[sqr],sqr);
+                set_one(&attck_bbs.rook_attck[sqr],west(sqr, i));
             if (east(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.rook_attck[sqr],sqr);
+                set_one(&attck_bbs.rook_attck[sqr],east(sqr, i));
             if (south(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.rook_attck[sqr],sqr);
+                set_one(&attck_bbs.rook_attck[sqr],south(sqr, i));
         }
         
         /* King attack bb */
         attck_bbs.king_attck[sqr] = 0;
         if (north(sqr, 1) != SQR_OUT)
-            set_one(&attck_bbs.king_attck[sqr],sqr);
+            set_one(&attck_bbs.king_attck[sqr],north(sqr,1));
         if (west(sqr, 1) != SQR_OUT)
-            set_one(&attck_bbs.king_attck[sqr],sqr);
+            set_one(&attck_bbs.king_attck[sqr],west(sqr,1));
         if (east(sqr, 1) != SQR_OUT)
-            set_one(&attck_bbs.king_attck[sqr],sqr);
+            set_one(&attck_bbs.king_attck[sqr],east(sqr,1));
         if (south(sqr, 1) != SQR_OUT)
-            set_one(&attck_bbs.king_attck[sqr],sqr);
+            set_one(&attck_bbs.king_attck[sqr],south(sqr,1));
+        if (north_west(sqr, 1) != SQR_OUT)
+            set_one(&attck_bbs.king_attck[sqr],north_west(sqr,1));
+        if (north_east(sqr, 1) != SQR_OUT)
+            set_one(&attck_bbs.king_attck[sqr],north_east(sqr,1));
+        if (south_west(sqr, 1) != SQR_OUT)
+            set_one(&attck_bbs.king_attck[sqr],south_west(sqr,1));
+        if (south_east(sqr, 1) != SQR_OUT)
+            set_one(&attck_bbs.king_attck[sqr],south_east(sqr,1));
         
         /* Queen attack bb */
         attck_bbs.queen_attck[sqr] = 0;
         for (int i = 1; i < 8; i++){
             
             if (north(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],north(sqr, i));
             if (west(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],west(sqr, i));
             if (east(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],east(sqr, i));
             if (south(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],south(sqr, i));
             
             if (north_west(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],north_west(sqr, i));
             if (north_east(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],north_east(sqr, i));
             if (south_west(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],south_west(sqr, i));
             if (south_east(sqr, i) != SQR_OUT)
-                set_one(&attck_bbs.queen_attck[sqr],sqr);
+                set_one(&attck_bbs.queen_attck[sqr],south_east(sqr, i));
         }
     }
 
