@@ -17,7 +17,7 @@ int compare_moves(void *m1, void *m2){
     assert(m1 != NULL);
     assert(m2 != NULL);
 
-    return m1 == m2;
+    return m1 != m2;
 }
 
 void destroy_move(Move *move){
