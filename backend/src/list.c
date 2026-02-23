@@ -5,8 +5,8 @@
 
 List *list_create(int (*compare_func)(void*,void*), void (*destroy_func)(void*)){
 
-    if (compare_func == NULL)
-        PSTAT(STAT_NULLPTR, "list_create compare_func");
+    // if (compare_func == NULL)
+    //     PSTAT(STAT_NULLPTR, "list_create compare_func");
 
     List *list = calloc(1, sizeof(List));
     if (list == NULL)
@@ -40,9 +40,8 @@ status_t list_insert(List *list, void *dt_ptr){
 
 
 status_t list_remove(List *list, void *dt_ptr){
-    if (list == NULL || dt_ptr)
-        return STAT_NULLPTR;
-
+    if (list == NULL || dt_ptr == NULL)
+        return STAT_NULLPTR;    
     ListNode *curr = list->head;
     ListNode *prev = NULL;
     while (curr && list->compare_func(curr->dt_ptr, dt_ptr) != 0){
@@ -54,8 +53,12 @@ status_t list_remove(List *list, void *dt_ptr){
         return STAT_NOTFOUND;
     
     // found
-    prev->next = curr->next;
-    list->destroy_func(curr);
+    if (prev)
+        prev->next = curr->next;
+    else
+        list->head = curr->next;
+    if (list->destroy_func)
+        list->destroy_func(curr);
     list->size--;
     return STAT_SUCCESS;
 }
