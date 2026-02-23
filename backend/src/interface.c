@@ -14,7 +14,7 @@ void engine_init(){
 bool move_legal(sqr_t src, sqr_t target){
     
     /* Find move src->target */
-    List *move_list = list_create(&compare_moves, NULL); 
+    List *move_list = list_create(compare_moves, NULL); 
     gen_legal_moves(&state, move_list); //todo: dont gen moves
     ListNode *node = move_list->head;
     while (node){
