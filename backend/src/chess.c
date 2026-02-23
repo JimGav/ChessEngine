@@ -146,7 +146,7 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
 
         /* Bishop attack bb */
         attck_bbs.bishop_attck[sqr] = 0;
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             if (north_west(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.bishop_attck[sqr],sqr);
             if (north_east(sqr, i) != SQR_OUT)
@@ -159,7 +159,7 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
         
         /* Rook attack bb */
         attck_bbs.rook_attck[sqr] = 0;
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             if (north(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.rook_attck[sqr],sqr);
             if (west(sqr, i) != SQR_OUT)
@@ -183,7 +183,7 @@ status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
         
         /* Queen attack bb */
         attck_bbs.queen_attck[sqr] = 0;
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             
             if (north(sqr, i) != SQR_OUT)
                 set_one(&attck_bbs.queen_attck[sqr],sqr);
@@ -361,7 +361,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
     sqr_t src, target;
     while ((src = pop_lsb(&rest_bishops)) != -1){
         
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = north_east(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -374,7 +374,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
         }
 
 
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = north_west(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -386,7 +386,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
                 break;
         }
 
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = south_east(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -398,7 +398,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
                 break;
         }
 
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = south_west(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -433,7 +433,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
     sqr_t src, target;
     while ((src = pop_lsb(&rest_rooks)) != -1){
         
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = north(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -446,7 +446,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
         }
 
 
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = west(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -458,7 +458,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
                 break;
         }
 
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = south(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -470,7 +470,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
                 break;
         }
 
-        for (int i = 1; i < 7; i++){
+        for (int i = 1; i < 8; i++){
             target = east(src, i);
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
@@ -504,7 +504,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     sqr_t src, target;
     src = pop_lsb(&rest_queens);
     /* Rook moves */ // todo: OPtimize with attck bb  
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = north(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -517,7 +517,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
 
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = west(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -529,7 +529,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
             break;
     }
 
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = south(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -541,7 +541,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
             break;
     }
 
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = east(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -554,7 +554,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
     /* Bishop moves */ // todo: OPtimize with attck bb  
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = north_east(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -567,7 +567,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
     }
 
 
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = north_west(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -579,7 +579,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
             break;
     }
 
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = south_east(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
@@ -591,7 +591,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
             break;
     }
 
-    for (int i = 1; i < 7; i++){
+    for (int i = 1; i < 8; i++){
         target = south_west(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
