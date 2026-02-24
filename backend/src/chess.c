@@ -28,6 +28,24 @@ status_t make_move_on(Move *move, ChessState *state){
     set_zero(&state->piece_bbs[move->piece], move->origin);
     set_one(&state->piece_bbs[move->piece], move->target);
 
+    /* If castling update rook bb as well */
+    if (move->piece == WHITE_KING && move->castling != NO_CASTLING){
+        sqr_t rook_src = move->castling == KINGSIDE ? h1 : a1;
+        sqr_t rook_target = move->castling == KINGSIDE ? f1 : d1;
+        set_zero(&state->piece_bbs[WHITE_ROOK], rook_src);
+        set_one(&state->piece_bbs[WHITE_ROOK], rook_target);
+    }
+    if (move->piece == BLACK_KING && move->castling != NO_CASTLING){
+        sqr_t rook_src = move->castling == KINGSIDE ? h8 : a8;
+        sqr_t rook_target = move->castling == KINGSIDE ? f8 : d8;
+        set_zero(&state->piece_bbs[BLACK_ROOK], rook_src);
+        set_one(&state->piece_bbs[BLACK_ROOK], rook_target);
+    }
+    
+    /* Update castling rights */
+    if (move->piece == WHITE_KING || move->piece == BLACK_KING)
+        state->castling_rights[move->side] = false;
+
     update_bbs(state);
 
     /* Update state->ep_target */
@@ -78,8 +96,8 @@ status_t gen_start_state(ChessState *start_state){
 
     update_bbs(start_state);
 
-    start_state->castling_rights[WHITE] = 0;
-    start_state->castling_rights[BLACK] = 0;
+    start_state->castling_rights[WHITE] = true;
+    start_state->castling_rights[BLACK] = true;
     
     start_state->ep_target = 0;
     
@@ -261,26 +279,26 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
 
             Move *move;
             if (!(sqr_to_bb(target) & state->all_bb)){
-                move = create_move(src, target, WHITE, WHITE_PAWN, false);
+                move = create_move(src, target, WHITE, WHITE_PAWN, false, NO_CASTLING);
                 list_insert(moves, move);
             }
 
             /* Double pawn push */
             sqr_t target2 = north(src, 2);
             if ((get_rank(src) == 1) && !(sqr_to_bb(target) & state->all_bb) && !(sqr_to_bb(target2) & state->all_bb)){
-                move = create_move(src, target2, WHITE, WHITE_PAWN, false);
+                move = create_move(src, target2, WHITE, WHITE_PAWN, false, NO_CASTLING);
                 list_insert(moves, move);
             }
 
             /* Captures */
             target = north_west(src, 1);
             if (target != SQR_OUT && ((sqr_to_bb(target) & state->black_bb)  || (target == state->ep_target))){
-                move = create_move(src, target, WHITE, WHITE_PAWN, target == state->ep_target);
+                move = create_move(src, target, WHITE, WHITE_PAWN, target == state->ep_target, NO_CASTLING);
                 list_insert(moves, move);
             }
             target = north_east(src, 1);
             if (target != SQR_OUT && ((sqr_to_bb(target) & state->black_bb ) || (target == state->ep_target))){
-                move = create_move(src, target, WHITE, WHITE_PAWN, target == state->ep_target);
+                move = create_move(src, target, WHITE, WHITE_PAWN, target == state->ep_target, NO_CASTLING);
                 list_insert(moves, move);
             }        
         }
@@ -293,26 +311,26 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
 
             Move *move;
             if (!(sqr_to_bb(target) & state->all_bb)){
-                move = create_move(src, target, BLACK, BLACK_PAWN, false);
+                move = create_move(src, target, BLACK, BLACK_PAWN, false, NO_CASTLING);
                 list_insert(moves, move);
             }
 
             /* Double pawn push */
             sqr_t target2 = south(src, 2);
             if ((get_rank(src) == 6) && !(sqr_to_bb(target) & state->all_bb) && !(sqr_to_bb(target2) & state->all_bb)){
-                move = create_move(src, target2, BLACK, BLACK_PAWN, false);
+                move = create_move(src, target2, BLACK, BLACK_PAWN, false, NO_CASTLING);
                 list_insert(moves, move);
             }
 
             /* Captures */
             target = south_west(src, 1);
             if (target != SQR_OUT && ((sqr_to_bb(target) & state->white_bb)  || (target == state->ep_target))){
-                move = create_move(src, target, BLACK, BLACK_PAWN, target == state->ep_target);
+                move = create_move(src, target, BLACK, BLACK_PAWN, target == state->ep_target, NO_CASTLING);
                 list_insert(moves, move);
             }
             target = south_east(src, 1);
             if (target != SQR_OUT && ((sqr_to_bb(target) & state->white_bb ) || (target == state->ep_target))){
-                move = create_move(src, target, BLACK, BLACK_PAWN, target == state->ep_target);
+                move = create_move(src, target, BLACK, BLACK_PAWN, target == state->ep_target, NO_CASTLING);
                 list_insert(moves, move);
             }
         }
@@ -342,7 +360,7 @@ status_t gen_knight_moves(ChessState *state, List *moves){
             if (sqr_to_bb(target) & same_color_bb)
                 continue;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_KNIGHT : BLACK_KNIGHT, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_KNIGHT : BLACK_KNIGHT, false, NO_CASTLING);
             list_insert(moves, move);
         }
     }
@@ -374,7 +392,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -387,7 +405,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -399,7 +417,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -411,7 +429,7 @@ status_t gen_bishop_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_BISHOP : BLACK_BISHOP, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -446,7 +464,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -459,7 +477,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -471,7 +489,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -483,7 +501,7 @@ status_t gen_rook_moves(ChessState *state, List *moves){
             if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
                 break;
             
-            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false);
+            Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_ROOK : BLACK_ROOK, false, NO_CASTLING);
             list_insert(moves, move);
 
             if (sqr_to_bb(target) & opp_color_bb)
@@ -517,7 +535,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -530,7 +548,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -542,7 +560,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -554,7 +572,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -567,7 +585,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -580,7 +598,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -592,7 +610,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -604,7 +622,7 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
         if (sqr_to_bb(target) & opp_color_bb)
@@ -634,10 +652,69 @@ status_t gen_king_moves(ChessState *state, List *moves){
         /* Target occupied by same color piece */
         if (sqr_to_bb(target) & same_color_bb)
             continue;
-        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_KING : BLACK_KING, false);
+        Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_KING : BLACK_KING, false, NO_CASTLING);
         list_insert(moves, move);
     } 
+    
+    /* Castling */
+    if (state->turn == WHITE && state->castling_rights[WHITE] && !in_check(state, WHITE)){
 
+        assert(src == e1);
+
+        piece_t apiece = get_piece_on_sqr(state, a1);
+        piece_t bpiece = get_piece_on_sqr(state, b1);
+        piece_t cpiece = get_piece_on_sqr(state, c1);
+        piece_t dpiece = get_piece_on_sqr(state, d1);
+        piece_t fpiece = get_piece_on_sqr(state, f1);
+        piece_t gpiece = get_piece_on_sqr(state, g1);
+        piece_t hpiece = get_piece_on_sqr(state, h1);
+
+        /* Kingside castling */
+        if (fpiece==PIECE_T_LAST && gpiece==PIECE_T_LAST && hpiece==WHITE_ROOK 
+            && !targets(state, BLACK, f1)){
+
+            Move *move = create_move(e1, g1, WHITE, WHITE_KING, false, KINGSIDE);
+            list_insert(moves, move);
+        }
+
+        /* Queenside castling */
+        if (apiece==WHITE_ROOK && bpiece==PIECE_T_LAST && cpiece==PIECE_T_LAST 
+            && dpiece==PIECE_T_LAST && !targets(state, BLACK, d1)){
+
+            Move *move = create_move(e1, c1, WHITE, WHITE_KING, false, QUEENSIDE);
+            list_insert(moves, move);
+        }
+
+    }
+    else if (state->turn == BLACK && state->castling_rights[BLACK] && !in_check(state, BLACK)){
+
+        assert(src == e8);
+
+        piece_t apiece = get_piece_on_sqr(state, a8);
+        piece_t bpiece = get_piece_on_sqr(state, b8);
+        piece_t cpiece = get_piece_on_sqr(state, c8);
+        piece_t dpiece = get_piece_on_sqr(state, d8);
+        piece_t fpiece = get_piece_on_sqr(state, f8);
+        piece_t gpiece = get_piece_on_sqr(state, g8);
+        piece_t hpiece = get_piece_on_sqr(state, h8);
+        
+        /* Kingside castling */
+        if (fpiece==PIECE_T_LAST && gpiece==PIECE_T_LAST && hpiece==BLACK_ROOK 
+            && !targets(state, WHITE, f8)){
+
+            Move *move = create_move(e8, g8, BLACK, BLACK_KING, false, KINGSIDE);
+            list_insert(moves, move);
+        }
+
+        /* Queenside castling */
+        if (apiece==BLACK_ROOK && bpiece==PIECE_T_LAST && cpiece==PIECE_T_LAST 
+            && dpiece==PIECE_T_LAST && !targets(state, WHITE, d8)){
+            
+            Move *move = create_move(e8, c8, BLACK, BLACK_KING, false, QUEENSIDE);
+            list_insert(moves, move);
+        }
+    }
+    
     return STAT_SUCCESS;
 }
 
@@ -687,28 +764,9 @@ status_t update_bbs(ChessState *state){
 
 bool in_check(ChessState *state, color_t side){
     assert(state != NULL);
-    
-    List *move_list = list_create(compare_moves, NULL);
-    ChessState dummy_state = *state; 
-    dummy_state.turn = (side == WHITE) ? BLACK : WHITE;
-    gen_pawn_moves(&dummy_state, move_list);
-    gen_knight_moves(&dummy_state, move_list);
-    gen_bishop_moves(&dummy_state, move_list);
-    gen_rook_moves(&dummy_state, move_list);
-    gen_king_moves(&dummy_state, move_list);
-    gen_queen_moves(&dummy_state, move_list);
-
-    ListNode *node = move_list->head;
-    while (node){
-        Move *move = node->dt_ptr;
-        if (side == WHITE && get_piece_on_sqr(&dummy_state, move->target) == WHITE_KING)
-            return true;
-        if (side == BLACK && get_piece_on_sqr(&dummy_state, move->target) == BLACK_KING)
-            return true;
-        node = node->next;
-    }
-    
-    return false;
+    BB_t king_bb = state->piece_bbs[side==WHITE?WHITE_KING:BLACK_KING];
+    sqr_t king = pop_lsb(&king_bb);
+    return targets(state, side==WHITE?BLACK:WHITE, king);
 }
 
 
@@ -722,4 +780,36 @@ piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr){
     }
 
     return PIECE_T_LAST;
+}
+
+
+bool targets(ChessState *state, color_t turn, sqr_t sqr){
+    
+    ChessState dummy_state = *state;
+    dummy_state.turn = turn;
+    List *moves = list_create(compare_moves, NULL);
+    gen_pawn_moves(&dummy_state, moves);    
+    gen_knight_moves(&dummy_state, moves);    
+    gen_bishop_moves(&dummy_state, moves);    
+    gen_rook_moves(&dummy_state, moves);    
+    gen_queen_moves(&dummy_state, moves);    
+    // do it manually for king to avoid infinite recursion
+    sqr_t srcs[] = {
+        west(sqr,1), north_west(sqr,1), north(sqr,1), north_east(sqr,1), 
+        east(sqr,1), south_east(sqr,1), south(sqr,1), south_west(sqr,1)
+    };
+    piece_t king = turn == WHITE ? WHITE_KING : BLACK_KING;
+    for (int i=0;i<8;i++){
+        if (sqr_to_bb(srcs[i]) & state->piece_bbs[king])
+            return true;
+    }
+
+    ListNode *node = moves->head;
+    while (node){
+        Move *move = node->dt_ptr;
+        if (move->target == sqr)
+            return true;
+        node = node->next;
+    }
+    return false;
 }

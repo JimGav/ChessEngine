@@ -2,7 +2,9 @@
 #include "moves.h"
 
 
-Move *create_move(sqr_t origin, sqr_t target, color_t side, piece_t piece, bool is_ep){ 
+Move *create_move(sqr_t origin, sqr_t target, color_t side, 
+    piece_t piece, bool is_ep, castling_t castling){ 
+    
     Move *move = calloc(1, sizeof(*move));
     assert(move != NULL);
     move->origin = origin;
@@ -10,6 +12,7 @@ Move *create_move(sqr_t origin, sqr_t target, color_t side, piece_t piece, bool 
     move->side = side;
     move->piece = piece;
     move->is_ep = is_ep;
+    move->castling = castling;
     return move;
 }
 

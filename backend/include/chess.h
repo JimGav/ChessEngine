@@ -42,6 +42,6 @@ status_t make_move_on(Move *move, ChessState *state);
 status_t update_bbs(ChessState *state);
 bool in_check(ChessState *state, color_t side);
 piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr);
-
+bool targets(ChessState *state, color_t turn, sqr_t sqr);
 
 #endif
