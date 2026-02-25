@@ -14,18 +14,19 @@ void engine_init(){
 bool move_legal(sqr_t src, sqr_t target){
     
     /* Find move src->target */
-    List *move_list = list_create(compare_moves, NULL); 
+    List *move_list = list_create(compare_moves, destroy_move); 
     gen_legal_moves(&state, move_list); //todo: dont gen moves
     ListNode *node = move_list->head;
     while (node){
         Move *move = node->dt_ptr;
         assert(move != NULL);
         if (move->origin == src && move->target == target){
+            list_destroy(move_list);
             return true;
         }
         node = node->next;
     }    
-
+    list_destroy(move_list);
     return false;
 }
 
@@ -50,8 +51,7 @@ void make_move(sqr_t src, sqr_t target){
             break;
         node = node->next;
     }
-
-    list_destroy(move_list);
+    
     make_move_on(move, &state);
     list_destroy(move_list);
 }
