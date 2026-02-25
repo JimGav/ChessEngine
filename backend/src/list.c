@@ -69,7 +69,9 @@ status_t list_destroy(List *list){
     ListNode *next = NULL;
     while (curr){
         next = curr->next;
-        list->destroy_func(curr);
+        if (list->destroy_func)
+            list->destroy_func(curr->dt_ptr);
+        free(curr);
         curr = next;
     }
     free(list);
