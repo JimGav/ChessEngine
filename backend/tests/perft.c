@@ -29,7 +29,7 @@ u64 perft(ChessState state, int depth, int *captures, int *ep, int *castles, int
                 *castles = *castles+1;
 
             piece_t target =  get_piece_on_sqr(&state, move->target);
-            if (target != PIECE_T_LAST)
+            if (target != PIECE_T_LAST || move->is_ep)
                 *captures = *captures+1;
             if (move->is_ep)
                 *ep = *ep+1;
