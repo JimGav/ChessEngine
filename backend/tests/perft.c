@@ -67,9 +67,9 @@ int main(int argc, char *argv[]){
         int ep = 0;
         u64 p = perft(cstate, i, &captures, &ep, &castles);
         printf("PERFT(%d) =  %lld Captures:%d, EP:%d, Castles:%d\n", i, p, captures, ep, castles);
-        assert(p == perft_res[i]);
         assert(captures == perft_captures[i]);
         assert(ep == perft_ep[i]);
         assert(castles == perft_castles[i]);
+        assert(p == perft_res[i]);
     }
 }
