@@ -529,12 +529,17 @@ status_t gen_queen_moves(ChessState *state, List *moves){
 
     sqr_t src, target;
     src = pop_lsb(&rest_queens);
+    if (src == -1)
+        return STAT_SUCCESS;
+
     /* Rook moves */ // todo: OPtimize with attck bb  
     for (int i = 1; i < 8; i++){
         target = north(src, i);
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -548,6 +553,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -560,6 +567,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -572,6 +581,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -585,6 +596,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -598,6 +611,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -610,6 +625,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -622,6 +639,8 @@ status_t gen_queen_moves(ChessState *state, List *moves){
         if (target == SQR_OUT || (sqr_to_bb(target) & same_color_bb))
             break;
         
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_QUEEN : BLACK_QUEEN, false, NO_CASTLING);
         list_insert(moves, move);
 
@@ -652,6 +671,8 @@ status_t gen_king_moves(ChessState *state, List *moves){
         /* Target occupied by same color piece */
         if (sqr_to_bb(target) & same_color_bb)
             continue;
+        assert(valid_sqr(src));
+        assert(valid_sqr(target));
         Move *move = create_move(src, target, state->turn, state->turn == WHITE ? WHITE_KING : BLACK_KING, false, NO_CASTLING);
         list_insert(moves, move);
     } 
