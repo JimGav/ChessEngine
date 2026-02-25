@@ -10,13 +10,11 @@ typedef unsigned long long u64;
 
 u64 perft(ChessState state, int depth, int *captures, int *ep, int *castles)
 {
+    if (depth == 0)        
+        return 1ULL;
+
     List *moves = list_create(compare_moves, destroy_move);
     gen_legal_moves(&state, moves);
-    
-    if (depth == 0){
-        list_destroy(moves);
-        return 1ULL;
-    }
 
     int n = 0;
     ListNode *node = moves->head;
