@@ -53,6 +53,8 @@ status_t make_move_on(Move *move, ChessState *state){
         state->ep_target = (move->side == WHITE) ? 
             south(move->target, 1):
             north(move->target, 1);
+        // printf("EP TARGET RANK %d\n", get_rank(state->ep_target));
+        // print_move(*move);
     }
     else
         state->ep_target = SQR_OUT;
@@ -785,36 +787,134 @@ piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr){
 
 bool targets(ChessState *state, color_t turn, sqr_t sqr){
     
-    ChessState dummy_state = *state;
-    dummy_state.turn = turn;
-    List *moves = list_create(compare_moves, destroy_move);
-    gen_pawn_moves(&dummy_state, moves);    
-    gen_knight_moves(&dummy_state, moves);    
-    gen_bishop_moves(&dummy_state, moves);    
-    gen_rook_moves(&dummy_state, moves);    
-    gen_queen_moves(&dummy_state, moves);    
-    // do it manually for king to avoid infinite recursion
-    sqr_t srcs[] = {
-        west(sqr,1), north_west(sqr,1), north(sqr,1), north_east(sqr,1), 
-        east(sqr,1), south_east(sqr,1), south(sqr,1), south_west(sqr,1)
-    };
-    piece_t king = turn == WHITE ? WHITE_KING : BLACK_KING;
-    for (int i=0;i<8;i++){
-        if (sqr_to_bb(srcs[i]) & state->piece_bbs[king]){
-            list_destroy(moves);
+    /* Check if knight targets */
+    BB_t knight_bb = (turn == WHITE) ?
+        state->piece_bbs[WHITE_KNIGHT]:
+        state->piece_bbs[BLACK_KNIGHT];
+    if (knight_bb & attck_bbs.knight_attck[sqr])
+        return true;
+
+    /* Check if bishop or queen diagonally targets */
+    piece_t bishop = (turn == WHITE) ?
+        WHITE_BISHOP:BLACK_BISHOP;
+    piece_t queen = (turn == WHITE) ?
+        WHITE_QUEEN:BLACK_QUEEN;
+    for (int i = 1; i < 8; i++){
+        sqr_t src = north_west(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == bishop || p == queen)
             return true;
-        }
+        else if (p != PIECE_T_LAST)
+            break;
+    }
+    for (int i = 1; i < 8; i++){
+        sqr_t src = north_east(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == bishop || p == queen)
+            return true;
+        else if (p != PIECE_T_LAST)
+            break;
+    }
+    for (int i = 1; i < 8; i++){
+        sqr_t src = south_west(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == bishop || p == queen)
+            return true;
+        else if (p != PIECE_T_LAST)
+            break;
+    }
+    for (int i = 1; i < 8; i++){
+        sqr_t src = south_east(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == bishop || p == queen)
+            return true;
+        else if (p != PIECE_T_LAST)
+            break;
     }
 
-    ListNode *node = moves->head;
-    while (node){
-        Move *move = node->dt_ptr;
-        if (move->target == sqr){
-            list_destroy(moves);
+    /* Check if rook or queen horizontally targets */
+    piece_t rook = (turn == WHITE) ?
+        WHITE_ROOK:BLACK_ROOK;
+    for (int i = 1; i < 8; i++){
+        sqr_t src = north(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == rook || p == queen)
             return true;
-        }
-        node = node->next;
+        else if (p != PIECE_T_LAST)
+            break;
     }
-    list_destroy(moves);
+    for (int i = 1; i < 8; i++){
+        sqr_t src = west(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == rook || p == queen)
+            return true;
+        else if (p != PIECE_T_LAST)
+            break;
+    }
+    for (int i = 1; i < 8; i++){
+        sqr_t src = east(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == rook || p == queen)
+            return true;
+        else if (p != PIECE_T_LAST)
+            break;
+    }
+    for (int i = 1; i < 8; i++){
+        sqr_t src = south(sqr, i);
+        if (src == SQR_OUT)
+            break;
+        piece_t p = get_piece_on_sqr(state, src);
+        if (p == rook || p == queen)
+            return true;
+        else if (p != PIECE_T_LAST)
+            break;
+    }
+
+
+    /* Check if king targets */
+    piece_t king = (turn == WHITE) ?
+        WHITE_KING:BLACK_KING;
+    sqr_t neighbours[MAX_NEIGHBOURS];
+    get_neighbours(sqr, neighbours);
+    for (int i = 0;i < MAX_NEIGHBOURS; i++){
+        if (neighbours[i] != SQR_OUT && get_piece_on_sqr(state, neighbours[i]) == king)
+            return true;
+    }
+
+
+    /* Check if pawn targets */
+    if (turn == WHITE){
+        sqr_t s1,s2;
+        s1 = south_west(sqr, 1);
+        s2 = south_east(sqr, 1);
+        if (s1 != SQR_OUT && (get_piece_on_sqr(state, s1) == WHITE_PAWN))
+            return true;
+        if (s2 != SQR_OUT && (get_piece_on_sqr(state, s2) == WHITE_PAWN))
+            return true;
+    }
+    if (turn == BLACK){
+        sqr_t s1,s2;
+        s1 = north_west(sqr, 1);
+        s2 = north_east(sqr, 1);
+        if (s1 != SQR_OUT && (get_piece_on_sqr(state, s1) == BLACK_PAWN))
+            return true;
+        if (s2 != SQR_OUT && (get_piece_on_sqr(state, s2) == BLACK_PAWN))
+            return true;
+    }
+
     return false;
 }
