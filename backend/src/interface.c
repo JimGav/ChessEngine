@@ -53,4 +53,5 @@ void make_move(sqr_t src, sqr_t target){
 
     list_destroy(move_list);
     make_move_on(move, &state);
+    list_destroy(move_list);
 }
