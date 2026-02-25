@@ -8,10 +8,13 @@ typedef unsigned long long u64;
 
 
 
-u64 perft(ChessState state, int depth, int *captures, int *ep, int *castles)
+u64 perft(ChessState state, int depth, int *captures, int *ep, int *castles, int *checks, int *checkmates)
 {
-    if (depth == 0)        
+    if (depth == 0){
+        if (in_checkmate(&state))
+            *checkmates = *checkmates + 1;
         return 1ULL;
+    }        
 
     List *moves = list_create(compare_moves, destroy_move);
     gen_legal_moves(&state, moves);
@@ -24,7 +27,9 @@ u64 perft(ChessState state, int depth, int *captures, int *ep, int *castles)
         if (depth == 1){
             if (move->castling != NO_CASTLING)
                 *castles = *castles+1;
-            if (get_piece_on_sqr(&state, move->target) != PIECE_T_LAST)
+
+            piece_t target =  get_piece_on_sqr(&state, move->target);
+            if (target != PIECE_T_LAST)
                 *captures = *captures+1;
             if (move->is_ep)
                 *ep = *ep+1;
@@ -33,7 +38,13 @@ u64 perft(ChessState state, int depth, int *captures, int *ep, int *castles)
 
         ChessState dstate = state;
         make_move_on(move, &dstate);
-        n += perft(dstate, depth-1, captures, ep, castles);
+
+        if (depth == 1){
+            if (in_check(&dstate, WHITE) || in_check(&dstate, BLACK))
+                *checks = *checks + 1;
+        }
+
+        n += perft(dstate, depth-1, captures, ep, castles, checks, checkmates);
         node = node->next;
     }
 
@@ -56,6 +67,12 @@ int main(int argc, char *argv[]){
     u64 perft_ep[] = {
         0, 0, 0, 0, 0, 258, 5248, 319617, 7187977, 319496827
     };
+    u64 perft_checks[] = {
+        0, 0, 0, 12, 469, 27351, 809099, 33103848, 968981593, 36095901903
+    };
+    u64 perft_checkmates[] = {
+        0, 0, 0, 0, 8, 347, 10828, 435767, 9852036, 400191963
+    };
 
     for (int i = 0; i <= atoi(argv[1]); i++){
         ChessState cstate;
@@ -65,9 +82,13 @@ int main(int argc, char *argv[]){
         int captures = 0;
         int castles = 0;
         int ep = 0;
-        u64 p = perft(cstate, i, &captures, &ep, &castles);
-        printf("PERFT(%d) =  %lld Captures:%d, EP:%d, Castles:%d\n", i, p, captures, ep, castles);
+        int checks = 0;
+        int checkmates = 0;
+        u64 p = perft(cstate, i, &captures, &ep, &castles, &checks, &checkmates);
+        printf("PERFT(%d) =  %lld Captures:%d, EP:%d, Castles:%d, Checks:%d, Checkmates:%d\n", i, p, captures, ep, castles, checks, checkmates);
         assert(captures == perft_captures[i]);
+        assert(checks == perft_checks[i]);
+        assert(checkmates == perft_checkmates[i]);
         assert(ep == perft_ep[i]);
         assert(castles == perft_castles[i]);
         assert(p == perft_res[i]);

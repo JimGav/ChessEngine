@@ -769,6 +769,15 @@ bool in_check(ChessState *state, color_t side){
     return targets(state, side==WHITE?BLACK:WHITE, king);
 }
 
+bool in_checkmate(ChessState *state){
+    List *moves = list_create(compare_moves, destroy_move);
+    gen_legal_moves(state, moves);
+    legalize_moves(state, moves);
+    int n = moves->size;
+    list_destroy(moves);
+    return in_check(state, state->turn) && n == 0;
+}
+
 
 piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr){
     assert(state != NULL);
