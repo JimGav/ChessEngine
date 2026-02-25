@@ -43,3 +43,15 @@ sqr_t south_east(sqr_t sqr, int i){
         return SQR_OUT;
     return east(sqr, i);
 }
+
+
+void get_neighbours(sqr_t sqr, sqr_t *neighbours){
+    neighbours[0] = north(sqr, 1);
+    neighbours[1] = north_east(sqr, 1);
+    neighbours[2] = east(sqr, 1);
+    neighbours[3] = south_east(sqr, 1);
+    neighbours[4] = south(sqr, 1);
+    neighbours[5] = south_west(sqr, 1);
+    neighbours[6] = west(sqr, 1);
+    neighbours[7] = north_west(sqr, 1);
+}

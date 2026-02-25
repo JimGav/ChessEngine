@@ -3,6 +3,10 @@
 
 #include <stdbool.h>
 
+
+#define MAX_NEIGHBOURS 8
+
+
 typedef enum {
     a1, b1, c1, d1, e1, f1, g1, h1,
     a2, b2, c2, d2, e2, f2, g2, h2,
@@ -42,5 +46,6 @@ sqr_t north_east(sqr_t sqr, int i);
 sqr_t south_west(sqr_t sqr, int i);
 sqr_t south_east(sqr_t sqr, int i);
 
+void get_neighbours(sqr_t sqr, sqr_t *neighbours);
 
 #endif
