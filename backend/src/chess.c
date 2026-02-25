@@ -53,8 +53,6 @@ status_t make_move_on(Move *move, ChessState *state){
         state->ep_target = (move->side == WHITE) ? 
             south(move->target, 1):
             north(move->target, 1);
-        // printf("EP TARGET RANK %d\n", get_rank(state->ep_target));
-        // print_move(*move);
     }
     else
         state->ep_target = SQR_OUT;
