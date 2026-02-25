@@ -115,7 +115,7 @@ status_t gen_successors(ChessState *state, List *successors){
     assert(state != NULL);
     assert(successors != NULL);
 
-    List *move_list = list_create(compare_moves, NULL); //todo
+    List *move_list = list_create(compare_moves, destroy_move);
     gen_legal_moves(state, move_list);
     
     ListNode *node = move_list->head;
@@ -133,7 +133,7 @@ status_t gen_successors(ChessState *state, List *successors){
         node = next;
     }
 
-
+    list_destroy(move_list);
     return STAT_SUCCESS;
 }
 
@@ -787,7 +787,7 @@ bool targets(ChessState *state, color_t turn, sqr_t sqr){
     
     ChessState dummy_state = *state;
     dummy_state.turn = turn;
-    List *moves = list_create(compare_moves, NULL);
+    List *moves = list_create(compare_moves, destroy_move);
     gen_pawn_moves(&dummy_state, moves);    
     gen_knight_moves(&dummy_state, moves);    
     gen_bishop_moves(&dummy_state, moves);    
@@ -800,16 +800,21 @@ bool targets(ChessState *state, color_t turn, sqr_t sqr){
     };
     piece_t king = turn == WHITE ? WHITE_KING : BLACK_KING;
     for (int i=0;i<8;i++){
-        if (sqr_to_bb(srcs[i]) & state->piece_bbs[king])
+        if (sqr_to_bb(srcs[i]) & state->piece_bbs[king]){
+            list_destroy(moves);
             return true;
+        }
     }
 
     ListNode *node = moves->head;
     while (node){
         Move *move = node->dt_ptr;
-        if (move->target == sqr)
+        if (move->target == sqr){
+            list_destroy(moves);
             return true;
+        }
         node = node->next;
     }
+    list_destroy(moves);
     return false;
 }

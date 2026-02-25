@@ -23,7 +23,7 @@ int compare_moves(void *m1, void *m2){
     return m1 != m2;
 }
 
-void destroy_move(Move *move){
+void destroy_move(void *move){
     assert(move != NULL);
     
     free(move);
@@ -86,5 +86,7 @@ void print_move(Move move){
 
 
 bool double_pawn_move(Move *move){
+    if (move->piece != WHITE_PAWN && move->piece != BLACK_PAWN)
+        return false;
     return abs(get_rank(move->origin) - get_rank(move->target)) == 2;
 }

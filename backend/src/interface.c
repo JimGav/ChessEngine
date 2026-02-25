@@ -39,7 +39,7 @@ bool move_legal(sqr_t src, sqr_t target){
 void make_move(sqr_t src, sqr_t target){
 
     /* Find move */
-    List *move_list = list_create(compare_moves, NULL);
+    List *move_list = list_create(compare_moves, destroy_move);
     gen_legal_moves(&state, move_list); //todo: Fix this.really bad
     ListNode *node = move_list->head;
     Move *move;
@@ -51,5 +51,6 @@ void make_move(sqr_t src, sqr_t target){
         node = node->next;
     }
 
+    list_destroy(move_list);
     make_move_on(move, &state);
 }

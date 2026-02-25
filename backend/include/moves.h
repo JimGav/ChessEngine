@@ -27,7 +27,7 @@ Move *create_move(sqr_t origin, sqr_t target, color_t side,
     piece_t piece, bool is_ep, castling_t castling);
 int compare_moves(void *m1, void *m2);
 void print_move(Move move);
-void destroy_move(Move *move);
+void destroy_move(void *move);
 bool double_pawn_move(Move *move);
 
 
