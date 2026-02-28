@@ -263,7 +263,6 @@ status_t gen_pawn_moves(ChessState *state, List *moves){
     assert(state != NULL);
     assert(moves != NULL);
 
-    //todo: optimize
     BB_t rest_pawns = state->turn == WHITE ?
         state->piece_bbs[WHITE_PAWN]:
         state->piece_bbs[BLACK_PAWN];
