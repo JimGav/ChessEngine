@@ -1,6 +1,6 @@
 #include "chess.h"
 #include "interface.h"
-
+#include "search.h"
 
 void engine_init(){
     printf("Initializing engine\n");
@@ -54,4 +54,12 @@ void make_move(sqr_t src, sqr_t target){
     
     make_move_on(move, &state);
     list_destroy(move_list);
+}
+
+
+Move search_move(int depth){
+    Move move;
+    minimax(&state, depth, &move);
+    print_move(move);
+    return move;
 }

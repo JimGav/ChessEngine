@@ -5,6 +5,7 @@
 #include "chess.h"
 #include "list.h"
 
-int minimax(ChessState *state, int depth);
+int minimax(ChessState *state, int depth, Move *best_move);
+int eval(ChessState *state);
 
 #endif

@@ -22,6 +22,7 @@ all:
 	$(CC) -c $(SRC_DIR)/moves.c -o $(OBJ_DIR)/moves.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/sqr.c -o $(OBJ_DIR)/sqr.o $(CFLAGS)
 	$(CC) -c $(SRC_DIR)/interface.c -o $(OBJ_DIR)/interface.o $(CFLAGS)
+	$(CC) -c $(SRC_DIR)/search.c -o $(OBJ_DIR)/search.o $(CFLAGS)
 
 	$(CC) $(OBJ) -shared -o $(LIB_DIR)/engine.so
 
