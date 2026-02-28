@@ -30,6 +30,24 @@ typedef enum {
 } file_t;
 
 
+#define RANK_1_BB ((BB_t)(0x00000000000000FF))
+#define RANK_2_BB ((BB_t)(0x000000000000FF00))
+#define RANK_3_BB ((BB_t)(0x0000000000FF0000))
+#define RANK_4_BB ((BB_t)(0x00000000FF000000))
+#define RANK_5_BB ((BB_t)(0x000000FF00000000))
+#define RANK_6_BB ((BB_t)(0x0000FF0000000000))
+#define RANK_7_BB ((BB_t)(0x00FF000000000000))
+#define RANK_8_BB ((BB_t)(0xFF00000000000000))
+
+#define FILE_1_BB ((BB_t)(0x0101010101010101))
+#define FILE_2_BB ((BB_t)(0x0202020202020202))
+#define FILE_3_BB ((BB_t)(0x0404040404040404))
+#define FILE_4_BB ((BB_t)(0x0808080808080808))
+#define FILE_5_BB ((BB_t)(0x1010101010101010))
+#define FILE_6_BB ((BB_t)(0x2020202020202020))
+#define FILE_7_BB ((BB_t)(0x4040404040404040))
+#define FILE_8_BB ((BB_t)(0x8080808080808080))
+
 
 bool valid_sqr(sqr_t sqr);
 
