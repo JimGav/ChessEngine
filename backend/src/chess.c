@@ -108,37 +108,6 @@ status_t gen_start_state(ChessState *start_state){
 
 
 /* 
-    Given state generates all successor states and stores 
-    them in successors list 
-*/
-status_t gen_successors(ChessState *state, List *successors){
-    assert(state != NULL);
-    assert(successors != NULL);
-
-    List *move_list = list_create(compare_moves, destroy_move);
-    gen_legal_moves(state, move_list);
-    
-    ListNode *node = move_list->head;
-    while (node){
-        ListNode *next = node->next;
-
-        /* Create successor for current move */
-        Move *move = node->dt_ptr;
-        ChessState *succ = malloc(sizeof(*succ));
-        *succ = *state;
-        make_move_on(move, succ);
-        succ->turn = state->turn == WHITE ? BLACK : WHITE;
-        list_insert(successors, succ);
-
-        node = next;
-    }
-
-    list_destroy(move_list);
-    return STAT_SUCCESS;
-}
-
-
-/* 
     Generates an attack bitboard for each piece type and stores it in bbs 
     bbs = bb array of array of bbs for each piece type
 */
