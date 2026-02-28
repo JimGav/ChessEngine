@@ -123,9 +123,9 @@ class ChessGUI:
 
                 if cls.turn == cls.ai_player:
                     move = cls.engine.search_move(2)
-                    cls.engine.make_move(move.origin, move.target)
                     src,target = move.to_sqr_centric()
                     cls.play_move((src,target))
+                    cls.engine.make_move(move.origin, move.target)
 
 
     def play_move(cls, move):
@@ -134,6 +134,22 @@ class ChessGUI:
         cls.board[src[0]][src[1]] = None
         cls.pass_turn()
         cls.render_board()
+        cls.check_game_over()
+
+
+    def check_game_over(cls):
+        result = cls.engine.game_result()
+        if result == 0:
+            print("WHITE WON")
+            exit(0)
+        elif result == 1:
+            print("BLACK WON")
+            exit(0)
+        elif result == 2:
+            print("DRAW")
+            exit(0)
+
+
 
     def render_board(cls):
         for row in range(8):

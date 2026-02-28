@@ -5,7 +5,7 @@
 
 
 int minimax(ChessState *state, int depth, Move *best_move){
-    if (depth == 0)
+    if (depth == 0  ||  is_goal_state(state))
         return eval(state);
 
     int best;
