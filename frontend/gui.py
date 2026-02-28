@@ -1,15 +1,27 @@
 import tkinter as Tk
 from functools import partial
+from ctypes import *
+
+
+class EngineMove(Structure):
+    _fields_ = [("origin", c_int),
+                ("target", c_int),
+                ("side", c_int),
+                ("piece", c_int),
+                ("is_ep", c_bool),    
+                ("castling", c_int),            
+                ]
 
 
 class ChessGUI:
-
+    engine = None
     window = None
     board = [[None for col in range(8)] for row in range(8)]
     board_colors = tuple()
     piece_imgs = dict()      # dict of Tk.PhotoImage instances
     selected_btn = None     # (btn, row, col)
     turn = "white"
+    ai_player = "black"
     img_paths = {
         "white_pawn": "frontend/images/white_pawn.png",
         "black_pawn": "frontend/images/black_pawn.png",
@@ -28,7 +40,11 @@ class ChessGUI:
     btn_info = dict()
 
 
-    def __init__(self, window_name:str, window_size:str, board_colors:tuple):
+    def __init__(self, engine, window_name:str, window_size:str, board_colors:tuple):
+        self.engine = engine
+        self.engine.search_move.restype = EngineMove
+        self.engine.search_move.argtypes = [c_int]
+        self.engine.engine_init()
         self.board_colors = board_colors
         self.setup_board()
         self.create_window(window_name, window_size)
@@ -93,12 +109,21 @@ class ChessGUI:
             cls.select(btn,row,col)
         elif cls.selected_btn is not None:
             move = (cls.selected_btn[1:], (row,col))
-            # if move valid
-            #   play_move
+            src = 8*move[0][0] + move[0][1]
+            target = 8*move[1][0] + move[1][1]
 
-            cls.play_move(move)
-            cls.pass_turn()
+            if cls.engine.move_legal(src, target):
+                cls.engine.make_move(src, target)
+                cls.play_move(move)
+                cls.pass_turn()
 
+                if cls.turn == cls.ai_player:
+                    move = cls.engine.search_move(2)
+                    cls.engine.make_move(move.origin, move.target)
+                    src  = (int(move.origin/8), move.origin % 8)
+                    target = (int(move.target/8), move.target % 8)
+                    cls.play_move((src,target))
+                    cls.pass_turn()
 
     def play_move(cls, move):
         src,target = move
@@ -116,7 +141,8 @@ class ChessGUI:
                     
 
     def pass_turn(cls):
-        cls.deselect()
+        if cls.selected_btn is not None:
+            cls.deselect()
         cls.turn = "white" if cls.turn == "black" else "black"
 
     def select(cls, btn:Tk.Button, row:int, col:int):
