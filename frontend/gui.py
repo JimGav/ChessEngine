@@ -11,6 +11,11 @@ class EngineMove(Structure):
                 ("is_ep", c_bool),    
                 ("castling", c_int),            
                 ]
+    
+    def to_sqr_centric(self):
+        src    =  (int(self.origin/8), self.origin % 8)
+        target =  (int(self.target/8), self.target % 8)
+        return (src, target)
 
 
 class ChessGUI:
@@ -120,8 +125,7 @@ class ChessGUI:
                 if cls.turn == cls.ai_player:
                     move = cls.engine.search_move(2)
                     cls.engine.make_move(move.origin, move.target)
-                    src  = (int(move.origin/8), move.origin % 8)
-                    target = (int(move.target/8), move.target % 8)
+                    src,target = move.to_sqr_centric()
                     cls.play_move((src,target))
                     cls.pass_turn()
 
