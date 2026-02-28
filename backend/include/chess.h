@@ -22,11 +22,7 @@ typedef struct {
 } ChessState;
 
 
-/* State search */
 status_t gen_start_state(ChessState *start_state);
-status_t gen_successors(ChessState *state, List *successors);
-bool is_goal_state(ChessState *state);
-
 status_t gen_attck_bbs();
 
 /* Move generation */
