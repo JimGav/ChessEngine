@@ -120,20 +120,19 @@ class ChessGUI:
             if cls.engine.move_legal(src, target):
                 cls.engine.make_move(src, target)
                 cls.play_move(move)
-                cls.pass_turn()
 
                 if cls.turn == cls.ai_player:
                     move = cls.engine.search_move(2)
                     cls.engine.make_move(move.origin, move.target)
                     src,target = move.to_sqr_centric()
                     cls.play_move((src,target))
-                    cls.pass_turn()
+
 
     def play_move(cls, move):
         src,target = move
         cls.board[target[0]][target[1]] = cls.board[src[0]][src[1]]
         cls.board[src[0]][src[1]] = None
-
+        cls.pass_turn()
         cls.render_board()
 
     def render_board(cls):
