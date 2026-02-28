@@ -51,3 +51,8 @@ int eval(ChessState *state){
         sum += in_checkmate(state);
     return sum;
 }
+
+
+bool is_goal_state(ChessState *state){
+    return in_checkmate(state);
+}
