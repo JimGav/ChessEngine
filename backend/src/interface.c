@@ -58,8 +58,15 @@ void make_move(sqr_t src, sqr_t target){
 
 
 Move search_move(int depth){
-    Move move;
-    minimax(&state, depth, &move);
-    print_move(move);
-    return move;
+    Move best_move = {.origin=0,.target=0};
+    minimax(&state, depth, &best_move);
+    return best_move;
+}
+
+
+int game_result(){
+    if (in_checkmate(&state))
+        return state.turn == WHITE ? 1 : 0;
+    //todo: draws
+    return -1;
 }
