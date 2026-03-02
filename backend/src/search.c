@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "chess.h"
 #include "search.h"
-
+#include "types.h"
 
 
 int minimax(ChessState *state, int depth, Move *best_move){
@@ -45,10 +45,21 @@ int minimax(ChessState *state, int depth, Move *best_move){
 
 int eval(ChessState *state){
     int sum = 0;
-    if (state->turn == WHITE)
-        sum -= in_checkmate(state);
-    else 
-        sum += in_checkmate(state);
+    sum += count(state->piece_bbs[WHITE_PAWN]) * PAWN_VAL;
+    sum += count(state->piece_bbs[WHITE_KNIGHT]) * KNIGHT_VAL;
+    sum += count(state->piece_bbs[WHITE_BISHOP]) * BISHOP_VAL;
+    sum += count(state->piece_bbs[WHITE_ROOK]) * ROOK_VAL;
+    sum += count(state->piece_bbs[WHITE_QUEEN]) * QUEEN_VAL;
+    sum -= count(state->piece_bbs[BLACK_PAWN]) * PAWN_VAL;
+    sum -= count(state->piece_bbs[BLACK_KNIGHT]) * KNIGHT_VAL;
+    sum -= count(state->piece_bbs[BLACK_BISHOP]) * BISHOP_VAL;
+    sum -= count(state->piece_bbs[BLACK_ROOK]) * ROOK_VAL;
+    sum -= count(state->piece_bbs[BLACK_QUEEN]) * QUEEN_VAL;
+    
+    if (in_checkmate(state)){
+        sum += (state->turn == WHITE) ? (-KING_VAL) : KING_VAL;
+    }
+
     return sum;
 }
 
