@@ -708,7 +708,7 @@ status_t gen_king_moves(ChessState *state, List *moves){
 }
 
 
-/* Removes all remaining legal moves from move list */
+/* Removes all moves leaving king in check from move list */
 status_t legalize_moves(ChessState *state, List *moves){
     assert(state != NULL);
     assert(moves != NULL);
