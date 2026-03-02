@@ -45,10 +45,11 @@ class ChessGUI:
     btn_info = dict()
 
 
-    def __init__(self, engine, window_name:str, window_size:str, board_colors:tuple):
+    def __init__(self, engine, depth:int, window_name:str, window_size:str, board_colors:tuple):
         self.engine = engine
         self.engine.search_move.restype = EngineMove
         self.engine.search_move.argtypes = [c_int]
+        self.depth = depth
         self.engine.engine_init()
         self.board_colors = board_colors
         self.setup_board()
