@@ -11,33 +11,13 @@ void engine_init(){
 }
 
 
-bool move_legal(sqr_t src, sqr_t target){
-    
-    /* Find move src->target */
-    List *move_list = list_create(compare_moves, destroy_move); 
-    gen_legal_moves(&state, move_list); //todo: dont gen moves
-    ListNode *node = move_list->head;
-    while (node){
-        Move *move = node->dt_ptr;
-        assert(move != NULL);
-        if (move->origin == src && move->target == target){
-            list_destroy(move_list);
-            return true;
-        }
-        node = node->next;
-    }    
-    list_destroy(move_list);
-    return false;
-}
-
-
 /* 
     Make move on global engine state. Equivalent to
     make_move_on(move, state) where move.origin = src,
     move.target = target and state is the global engine 
     state
 */
-void make_move(sqr_t src, sqr_t target){
+int make_move(sqr_t src, sqr_t target){
 
     /* Find move */
     List *move_list = list_create(compare_moves, destroy_move);
@@ -51,9 +31,14 @@ void make_move(sqr_t src, sqr_t target){
             break;
         node = node->next;
     }
+
+    if (node == NULL) // Move not found
+        return -1;
     
     make_move_on(move, &state);
     list_destroy(move_list);
+
+    return 0;
 }
 
 
