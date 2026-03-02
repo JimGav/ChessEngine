@@ -25,6 +25,15 @@ typedef enum {
 } piece_t;
 
 
+/* Piece values for eval */
+#define PAWN_VAL    100
+#define KNIGHT_VAL  320
+#define BISHOP_VAL  330
+#define ROOK_VAL    500
+#define QUEEN_VAL   900
+#define KING_VAL    20000
+
+
 typedef struct {
     BB_t knight_attck[64], bishop_attck[64], 
         rook_attck[64], king_attck[64], queen_attck[64];
