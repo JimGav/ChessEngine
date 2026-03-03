@@ -22,23 +22,23 @@ typedef struct {
 } ChessState;
 
 
-status_t gen_start_state(ChessState *start_state);
+status_t gen_start_state();
 status_t gen_attck_bbs();
 
 /* Move generation */
-status_t gen_legal_moves(ChessState *state, List *moves);
-status_t gen_pawn_moves(ChessState *state, List *moves);
-status_t gen_knight_moves(ChessState *state, List *moves);
-status_t gen_bishop_moves(ChessState *state, List *moves);
-status_t gen_rook_moves(ChessState *state, List *moves);
-status_t gen_queen_moves(ChessState *state, List *moves);
-status_t gen_king_moves(ChessState *state, List *moves);
-status_t legalize_moves(ChessState *state, List *moves);
-status_t make_move_on(Move *move, ChessState *state);
-status_t update_bbs(ChessState *state);
-bool in_check(ChessState *state, color_t side);
-bool in_checkmate(ChessState *state);
-piece_t get_piece_on_sqr(ChessState *state, sqr_t sqr);
-bool targets(ChessState *state, color_t turn, sqr_t sqr);
+status_t gen_moves(List *moves);
+status_t gen_pawn_moves(List *moves);
+status_t gen_knight_moves(List *moves);
+status_t gen_bishop_moves(List *moves);
+status_t gen_rook_moves(List *moves);
+status_t gen_queen_moves(List *moves);
+status_t gen_king_moves(List *moves);
+status_t legalize_moves(List *moves);
+bool make_move(Move *move);
+status_t update_bbs();
+bool in_check(color_t side);
+bool in_checkmate();
+piece_t get_piece_on_sqr(sqr_t sqr);
+bool targets(color_t turn, sqr_t sqr);
 
 #endif

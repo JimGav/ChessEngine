@@ -6,14 +6,8 @@
 #include "sqr.h"
 
 
-extern ChessState state;
-
-
 void engine_init();
-
-/* Make move on global engine state */
-int make_move(sqr_t src, sqr_t target);
-
+bool find_n_play(sqr_t src, sqr_t target);
 Move search_move(int depth);
 
 

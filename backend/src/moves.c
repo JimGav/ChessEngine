@@ -3,7 +3,7 @@
 
 
 Move *create_move(sqr_t origin, sqr_t target, color_t side, 
-    piece_t piece, bool is_ep, castling_t castling){ 
+    piece_t piece, piece_t captured_piece, bool is_ep, castling_t castling){
     
     Move *move = calloc(1, sizeof(*move));
     assert(move != NULL);
@@ -11,6 +11,7 @@ Move *create_move(sqr_t origin, sqr_t target, color_t side,
     move->target = target;
     move->side = side;
     move->piece = piece;
+    move->captured_piece = captured_piece;
     move->is_ep = is_ep;
     move->castling = castling;
     return move;
