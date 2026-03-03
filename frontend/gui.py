@@ -49,6 +49,8 @@ class ChessGUI:
         self.engine = engine
         self.engine.search_move.restype = EngineMove
         self.engine.search_move.argtypes = [c_int]
+        self.engine.make_move.restype = c_bool
+        self.engine.make_move.argtypes = [c_void_p]
         self.depth = depth
         self.engine.engine_init()
         self.board_colors = board_colors
