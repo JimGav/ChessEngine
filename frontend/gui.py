@@ -121,16 +121,17 @@ class ChessGUI:
             target = 8*move[1][0] + move[1][1]
 
             
-            res = cls.engine.make_move(src, target)
-            if res == -1: # Move illegal
+            res = cls.engine.find_n_play(src, target)
+            if res == False: # Move illegal
                 return
 
             cls.play_move(move)
+            cls.window.update()
             if cls.turn == cls.ai_player:
                 move = cls.engine.search_move(cls.depth)
                 src,target = move.to_sqr_centric()
                 cls.play_move((src,target))
-                cls.engine.make_move(move.origin, move.target)
+                cls.engine.make_move(addressof(move))
 
 
     def play_move(cls, move):
