@@ -9,6 +9,7 @@
 
 /* Global variables */
 ChessState state;
+attck_bbs_t attck_bbs;
 
 
 bool make_move(Move *move){
@@ -130,7 +131,6 @@ status_t gen_start_state(){
     Generates an attack bitboard for each piece type and stores it in bbs 
     bbs = bb array of array of bbs for each piece type
 */
-attck_bbs_t attck_bbs;
 status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
 
     for (sqr_t sqr = a1; sqr <= h8; sqr++){
