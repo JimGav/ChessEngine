@@ -36,7 +36,8 @@ typedef enum {
 
 typedef struct {
     BB_t knight_attck[64], bishop_attck[64], 
-        rook_attck[64], king_attck[64], queen_attck[64];
+        rook_attck[64], king_attck[64], queen_attck[64],
+        white_pawn_capt[64], black_pawn_capt[64];
 } attck_bbs_t;
 
 

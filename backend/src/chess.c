@@ -134,6 +134,21 @@ attck_bbs_t attck_bbs;
 status_t gen_attck_bbs(){ //todo: precompute ranks files diagonals
 
     for (sqr_t sqr = a1; sqr <= h8; sqr++){
+
+
+        /* Pawn capture bb */
+        attck_bbs.white_pawn_capt[sqr] = 0;
+        attck_bbs.black_pawn_capt[sqr] = 0;
+        sqr_t l,r;
+        l = north_west(sqr,1);
+        r = north_east(sqr,1);
+        if (l != SQR_OUT) set_one(&attck_bbs.white_pawn_capt[sqr], l);
+        if (r != SQR_OUT) set_one(&attck_bbs.white_pawn_capt[sqr], r);
+        l = south_west(sqr,1);
+        r = south_east(sqr,1);
+        if (l != SQR_OUT) set_one(&attck_bbs.black_pawn_capt[sqr], l);
+        if (r != SQR_OUT) set_one(&attck_bbs.black_pawn_capt[sqr], r);
+
         
         /* Knight attack bb */
         attck_bbs.knight_attck[sqr] = 0;
@@ -272,18 +287,13 @@ status_t gen_pawn_moves(List *moves){
             }
 
             /* Captures */
-            target = north_west(src, 1);
-            piece_t captured_piece = (target == state.ep_target) ? BLACK_PAWN : get_piece_on_sqr(target);
-            if (target != SQR_OUT && ((sqr_to_bb(target) & state.black_bb)  || (target == state.ep_target))){
-                move = create_move(src, target, WHITE, WHITE_PAWN, captured_piece, target == state.ep_target, NO_CASTLING);
-                list_insert(moves, move);
+            BB_t ep_target_bb = state.ep_target != SQR_OUT ? sqr_to_bb(state.ep_target) : 0;
+            BB_t white_capt = attck_bbs.white_pawn_capt[src] & (state.black_bb | ep_target_bb);
+            while ((target = pop_lsb(&white_capt)) != -1){
+                piece_t captured = target == state.ep_target ? BLACK_PAWN : get_piece_on_sqr(target);
+                move = create_move(src, target, WHITE, WHITE_PAWN, captured, target == state.ep_target, NO_CASTLING); 
+                list_insert(moves, move);   
             }
-            target = north_east(src, 1);
-            captured_piece = (target == state.ep_target) ? BLACK_PAWN : get_piece_on_sqr(target);
-            if (target != SQR_OUT && ((sqr_to_bb(target) & state.black_bb ) || (target == state.ep_target))){
-                move = create_move(src, target, WHITE, WHITE_PAWN, captured_piece, target == state.ep_target, NO_CASTLING);
-                list_insert(moves, move);
-            }        
         }
         else if (state.turn == BLACK){
             
@@ -306,17 +316,12 @@ status_t gen_pawn_moves(List *moves){
             }
 
             /* Captures */
-            target = south_west(src, 1);
-            piece_t captured_piece = (target == state.ep_target) ? WHITE_PAWN : get_piece_on_sqr(target);
-            if (target != SQR_OUT && ((sqr_to_bb(target) & state.white_bb)  || (target == state.ep_target))){
-                move = create_move(src, target, BLACK, BLACK_PAWN, captured_piece, target == state.ep_target, NO_CASTLING);
-                list_insert(moves, move);
-            }
-            target = south_east(src, 1);
-            captured_piece = (target == state.ep_target) ? WHITE_PAWN : get_piece_on_sqr(target);
-            if (target != SQR_OUT && ((sqr_to_bb(target) & state.white_bb ) || (target == state.ep_target))){
-                move = create_move(src, target, BLACK, BLACK_PAWN, captured_piece, target == state.ep_target, NO_CASTLING);
-                list_insert(moves, move);
+            BB_t ep_target_bb = state.ep_target != SQR_OUT ? sqr_to_bb(state.ep_target) : 0;
+            BB_t black_capt = attck_bbs.black_pawn_capt[src] & (state.white_bb | ep_target_bb);
+            while ((target = pop_lsb(&black_capt)) != -1){
+                piece_t captured = target == state.ep_target ? WHITE_PAWN : get_piece_on_sqr(target);
+                move = create_move(src, target, BLACK, BLACK_PAWN, captured, target == state.ep_target, NO_CASTLING);  
+                list_insert(moves, move);   
             }
         }
     }
