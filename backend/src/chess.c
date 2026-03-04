@@ -341,13 +341,8 @@ status_t gen_knight_moves(List *moves){
 
     sqr_t src, target;
     while ((src = pop_lsb(&rest_knights)) != -1){
-        BB_t rest_attcks = attck_bbs.knight_attck[src];
+        BB_t rest_attcks = attck_bbs.knight_attck[src] & ~same_color_bb;
         while ((target = pop_lsb(&rest_attcks)) != -1){
-            
-            /* Target occupied by same color */
-            if (sqr_to_bb(target) & same_color_bb)
-                continue;
-            
             Move *move = create_move(src, target, state.turn, state.turn == WHITE ? WHITE_KNIGHT : BLACK_KNIGHT, get_piece_on_sqr(target), false, NO_CASTLING);
             list_insert(moves, move);
         }
