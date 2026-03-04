@@ -881,25 +881,10 @@ bool targets(color_t turn, sqr_t sqr){
     }
 
 
-    /* Check if pawn targets */
-    if (turn == WHITE){
-        sqr_t s1,s2;
-        s1 = south_west(sqr, 1);
-        s2 = south_east(sqr, 1);
-        if (s1 != SQR_OUT && (get_piece_on_sqr(s1) == WHITE_PAWN))
-            return true;
-        if (s2 != SQR_OUT && (get_piece_on_sqr(s2) == WHITE_PAWN))
-            return true;
-    }
-    if (turn == BLACK){
-        sqr_t s1,s2;
-        s1 = north_west(sqr, 1);
-        s2 = north_east(sqr, 1);
-        if (s1 != SQR_OUT && (get_piece_on_sqr(s1) == BLACK_PAWN))
-            return true;
-        if (s2 != SQR_OUT && (get_piece_on_sqr(s2) == BLACK_PAWN))
-            return true;
-    }
+    /* Check if pawn targets */ //todo: ep
+    piece_t pawns = (turn == WHITE) ? WHITE_PAWN : BLACK_PAWN;
+    if (attck_bbs.black_pawn_capt[sqr] & state.piece_bbs[pawns])
+        return true;
 
     return false;
 }
